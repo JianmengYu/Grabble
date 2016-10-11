@@ -1,15 +1,20 @@
 <resources>
     <string name="app_name">Grabble</string>
 
+    <!--Temporarily used Strings-->
+    <string name="temp_button_clicked">button clicked!</string>
+
     <!--Main Page Strings-->
     <string name="main_title">GRABBLE</string>
     <string name="main_version">VER</string>
-    <string name="main_start_assamble">START</string>
-    <string name="main_start_grabble">GRAB</string>
+    <string name="main_start_grabble">GRAB LETTERS</string>
+    <string name="main_start_assemble">START ASSEMBLE</string>
+    <string name="main_achievements">ACHIEVEMENTS</string>
     <string name="main_statistics">STATISTICS</string>
     <string name="main_settings">SETTINGS</string>
     <string name="main_about">ABOUT</string>
     <string name="main_help">HELP</string>
     <string name="main_share">SHARE</string>
+    <string name="title_activity_map">Map</string>
 
 </resources>

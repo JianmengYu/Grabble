@@ -1,11 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/mainmenu_title"
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello Dimwit!"
-        android:id="@+id/textView" />
+        android:text="@string/main_start_grabble"
+        android:id="@+id/main_grab_button"
+        android:padding="4dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_start_assemble"
+        android:id="@+id/main_start_button"
+        android:padding="4dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_achievements"
+        android:id="@+id/main_achievement_button"
+        android:padding="4dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_statistics"
+        android:id="@+id/main_statistics_button"
+        android:padding="4dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_settings"
+        android:id="@+id/main_settings_button"
+        android:padding="4dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_help"
+        android:id="@+id/main_help_button"
+        android:padding="4dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_about"
+        android:id="@+id/main_about_button"
+        android:padding="4dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_share"
+        android:id="@+id/main_share_button"
+        android:padding="4dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="center_horizontal" />
+
+
+
 </LinearLayout>
