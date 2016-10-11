@@ -7,8 +7,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -41,9 +43,60 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         //TODO implement map
         //Dummy code, add a randonm point in GS and zoom to it
 
-        LatLng george = new LatLng(55.94547802039716,-3.1852787660998225);
+        //Dummy markers - 4 corners
+        LatLng george1 = new LatLng(55.946,-3.184);
+        MarkerOptions marker1 = new MarkerOptions()
+                .position(george1)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
+                .title("Point1");
+        mMap.addMarker(marker1);
+
+        LatLng george2 = new LatLng(55.942,-3.192);
+        MarkerOptions marker2 = new MarkerOptions()
+                .position(george2)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
+                .title("Point2");
+        mMap.addMarker(marker2);
+
+        LatLng george3 = new LatLng(55.946,-3.192);
+        MarkerOptions marker3 = new MarkerOptions()
+                .position(george3)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
+                .title("Point3");
+        mMap.addMarker(marker3);
+
+        LatLng george4 = new LatLng(55.942,-3.184);
+        MarkerOptions marker4 = new MarkerOptions()
+                .position(george4)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
+                .title("Point4");
+        mMap.addMarker(marker4);
+
+        //Sqaure markers
+        LatLng pointsamp1 = new LatLng(55.943,-3.189);
+        MarkerOptions markersamp1 = new MarkerOptions()
+                .position(pointsamp1)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
+                .title("Point5");
+        mMap.addMarker(markersamp1);
+
+        LatLng pointsamp2 = new LatLng(55.94352,-3.18944);
+        MarkerOptions markersamp2 = new MarkerOptions()
+                .position(pointsamp2)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
+                .title("Point6");
+        mMap.addMarker(markersamp2);
+
+        LatLng pointsamp3 = new LatLng(55.94378,-3.18912);
+        MarkerOptions markersamp3 = new MarkerOptions()
+                .position(pointsamp3)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
+                .title("Point7");
+        mMap.addMarker(markersamp3);
+
+        //Camera setting
         CameraPosition testAngle = new CameraPosition.Builder()
-                .target(george)
+                .target(pointsamp1)
                 .zoom(17)
                 .bearing(0)
                 .tilt(30)

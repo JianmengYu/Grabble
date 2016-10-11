@@ -36,7 +36,9 @@
 
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map"></activity>
+            android:label="@string/title_activity_map" />
+        <activity android:name=".ActivityScrabble" />
+        <activity android:name=".ActivityAchievement"></activity>
     </application>
 
 </manifest>

@@ -46,9 +46,11 @@ public class FragmentMainPage extends Fragment {
         tStart.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(getActivity().getApplicationContext(),
-                        getString(R.string.main_start_assemble)+" button clicked, yay!",
-                        Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getActivity().getApplicationContext(),ActivityScrabble.class);
+                startActivity(i);
+                //Toast.makeText(getActivity().getApplicationContext(),
+                //        getString(R.string.main_start_assemble)+" button clicked, yay!",
+                //        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -56,9 +58,11 @@ public class FragmentMainPage extends Fragment {
         tAchievement.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(getActivity().getApplicationContext(),
-                        getString(R.string.main_achievements)+" button clicked, yay!",
-                        Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getActivity().getApplicationContext(),ActivityAchievement.class);
+                startActivity(i);
+                //Toast.makeText(getActivity().getApplicationContext(),
+                //        getString(R.string.main_achievements)+" button clicked, yay!",
+                //        Toast.LENGTH_SHORT).show();
             }
         });
 
