@@ -1,10 +1,14 @@
 package com.yujianmeng.selp.grabble;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +26,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Button mButtonLeftTurn;
     private Button mButtonRightTurn;
     private Button mButtonEagle;
+    private Button mButtonHelp;
+    private Button mButtonGrabble;
+    private Button mButtonMenu;
+    //Dummy menu image
+    private ImageView mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +40,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if ( keyCode == KeyEvent.KEYCODE_MENU ) {
+            if(mMenu.getVisibility() == View.VISIBLE){
+                mMenu.setVisibility(View.INVISIBLE);
+            }else{
+                mMenu.setVisibility(View.VISIBLE);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     /**
@@ -45,9 +67,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //TODO implement map
+        //TODO implement map,remove dummy code
         //Dummy code, add a randonm point in GS and zoom to it
-
         //Dummy markers - 4 corners
         LatLng george1 = new LatLng(55.946,-3.184);
         MarkerOptions marker1 = new MarkerOptions()
@@ -98,11 +119,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
                 .title("Point7");
         mMap.addMarker(markersamp3);
+        //TODO end of map dummy code
 
         //Initialize buttons on the map
         mButtonLeftTurn = (Button) findViewById(R.id.button_left_turn);
         mButtonRightTurn = (Button) findViewById(R.id.button_right_turn);
         mButtonEagle = (Button) findViewById(R.id.button_eagle);
+        mButtonHelp = (Button) findViewById(R.id.button_help);
+        mButtonGrabble = (Button) findViewById(R.id.button_grabble);
+        mButtonMenu = (Button) findViewById(R.id.button_menu);
+        mMenu = (ImageView) findViewById(R.id.mapdummymenu);
 
         mButtonLeftTurn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,6 +191,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                 });
                     }
                 },5000);
+            }
+        });
+        mButtonHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),
+                        getString(R.string.main_help)+" button clicked, yay!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        mButtonGrabble.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(),ActivityScrabble.class);
+                startActivity(i);
+            }
+        });
+        mButtonMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mMenu.getVisibility() == View.VISIBLE){
+                    mMenu.setVisibility(View.INVISIBLE);
+                }else{
+                    mMenu.setVisibility(View.VISIBLE);
+                }
             }
         });
         // --- finish initializing, starting app ---

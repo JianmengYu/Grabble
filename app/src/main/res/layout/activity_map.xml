@@ -14,13 +14,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <Button
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:id="@+id/button_left_turn"
             android:background="@drawable/button_left_turn"
+            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:padding="4dp"/>
 
@@ -29,6 +30,7 @@
             android:layout_height="64dp"
             android:id="@+id/button_right_turn"
             android:background="@drawable/button_right_turn"
+            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:padding="4dp"/>
 
@@ -38,9 +40,45 @@
             android:id="@+id/button_eagle"
             android:background="@drawable/button_eagle"
             android:padding="4dp"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/button_left_turn"/>
 
-        </RelativeLayout>
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/button_help"
+            android:background="@drawable/button_help"
+            android:padding="4dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/button_grabble"
+            android:background="@drawable/button_grabble"
+            android:padding="4dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/button_menu"
+            android:background="@drawable/button_menu"
+            android:padding="4dp"
+            android:layout_alignParentRight="true"
+            android:layout_above="@+id/button_grabble"/>
+
+        <ImageView
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            android:id="@+id/mapdummymenu"
+            android:src="@drawable/design_map_menu"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
 
 
 </FrameLayout>
