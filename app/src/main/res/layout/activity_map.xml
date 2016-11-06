@@ -1,8 +1,46 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yujianmeng.selp.grabble.MapActivity" />
+    tools:context=".MapActivity" >
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.yujianmeng.selp.grabble.MapActivity" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/button_left_turn"
+            android:background="@drawable/button_left_turn"
+            android:layout_alignParentLeft="true"
+            android:padding="4dp"/>
+
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/button_right_turn"
+            android:background="@drawable/button_right_turn"
+            android:layout_alignParentRight="true"
+            android:padding="4dp"/>
+
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/button_eagle"
+            android:background="@drawable/button_eagle"
+            android:padding="4dp"
+            android:layout_below="@+id/button_left_turn"/>
+
+        </RelativeLayout>
+
+
+</FrameLayout>

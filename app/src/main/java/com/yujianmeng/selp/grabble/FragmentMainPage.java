@@ -13,6 +13,9 @@ import android.widget.Toast;
  * Created by YuJianmeng on 2016/10/6.
  */
 
+//TODO remove everything, move all function into map activity.
+//TODO change the main page into loading screen
+
 public class FragmentMainPage extends Fragment {
 
     private TextView tStart;

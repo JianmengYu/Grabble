@@ -1,7 +1,10 @@
 package com.yujianmeng.selp.grabble;
 
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,6 +19,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Button mButtonLeftTurn;
+    private Button mButtonRightTurn;
+    private Button mButtonEagle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +32,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -94,17 +99,110 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .title("Point7");
         mMap.addMarker(markersamp3);
 
-        //Camera setting
+        //Initialize buttons on the map
+        mButtonLeftTurn = (Button) findViewById(R.id.button_left_turn);
+        mButtonRightTurn = (Button) findViewById(R.id.button_right_turn);
+        mButtonEagle = (Button) findViewById(R.id.button_eagle);
+
+        mButtonLeftTurn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CameraPosition temp = mMap.getCameraPosition();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                        new CameraPosition.Builder(temp).bearing(temp.bearing - 30).build()
+                ));
+            }
+        });
+        mButtonLeftTurn.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View v) {
+                CameraPosition temp = mMap.getCameraPosition();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                        new CameraPosition.Builder(temp).bearing(temp.bearing - 90).build()
+                ));
+                return true;
+            }
+        });
+        mButtonRightTurn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CameraPosition temp = mMap.getCameraPosition();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                        new CameraPosition.Builder(temp).bearing(temp.bearing + 30).build()
+                ));
+            }
+        });
+        mButtonRightTurn.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View v) {
+                CameraPosition temp = mMap.getCameraPosition();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                        new CameraPosition.Builder(temp).bearing(temp.bearing + 90).build()
+                ));
+                return true;
+            }
+        });
+        //TODO add long click to check item number
+        mButtonEagle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CameraPosition temp = mMap.getCameraPosition();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                        new CameraPosition.Builder(temp).zoom(temp.zoom - 2).build()
+                ));
+                disableControl();//Disable the control temporarily to prevent cheat.
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        CameraPosition temp = mMap.getCameraPosition();
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                                new CameraPosition.Builder(temp).zoom(temp.zoom + 2).build()
+                        ),
+                                new GoogleMap.CancelableCallback() {
+                                    @Override
+                                    public void onFinish() {enableControl();}//Return controls
+                                    @Override
+                                    public void onCancel() {}
+                                });
+                    }
+                },5000);
+            }
+        });
+        // --- finish initializing, starting app ---
+        disableControl();//Prevent Cheat, re-enable during camera initialization
+
         CameraPosition testAngle = new CameraPosition.Builder()
                 .target(pointsamp1)
-                .zoom(17)
+                .zoom(19)
                 .bearing(0)
-                .tilt(30)
+                .tilt(45)
                 .build();
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(testAngle));
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(testAngle),
+                new GoogleMap.CancelableCallback() {
+                    @Override
+                    public void onFinish() {enableControl();}//Return controls
+                    @Override
+                    public void onCancel() {}
+                });
+    }
 
-        //mMap.addMarker(new MarkerOptions().position(george).title("TESTPOINT"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(george));
-        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(george,18));
+    private void disableControl(){
+        //TODO finish this after adding other button
+        mButtonLeftTurn.setEnabled(false);
+        mButtonRightTurn.setEnabled(false);
+        mButtonEagle.setEnabled(false);
+        mMap.getUiSettings().setAllGesturesEnabled(false);
+    }
+
+    private void enableControl(){
+        mButtonLeftTurn.setEnabled(true);
+        mButtonRightTurn.setEnabled(true);
+        mButtonEagle.setEnabled(true);
+        mMap.getUiSettings().setAllGesturesEnabled(true);
+        //Disable gestures and widgets, except the bearing one
+        mMap.getUiSettings().setZoomGesturesEnabled(false);
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setCompassEnabled(false);
+        mMap.getUiSettings().setIndoorLevelPickerEnabled(false);
+        mMap.getUiSettings().setTiltGesturesEnabled(false);
     }
 }
