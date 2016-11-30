@@ -12,7 +12,9 @@ public class MainActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new FragmentMainPage();
+        return new FragmentIntro();
+        //TODO remove obsoleted main page
+        //return new FragmentMainPage();
     }
 
 }

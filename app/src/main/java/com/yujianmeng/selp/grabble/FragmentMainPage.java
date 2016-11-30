@@ -1,6 +1,7 @@
 package com.yujianmeng.selp.grabble;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,8 +14,7 @@ import android.widget.Toast;
  * Created by YuJianmeng on 2016/10/6.
  */
 
-//TODO remove everything, move all function into map activity.
-//TODO change the main page into loading screen
+//TODO obsolete this. (replaced by fragment_intro)
 
 public class FragmentMainPage extends Fragment {
 
@@ -32,8 +32,10 @@ public class FragmentMainPage extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mainpage, container, false);
 
-        //TODO get placeholder button to work;
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "generica_bold.otf");
+
         tGrab = (TextView) view.findViewById(R.id.main_grab_button);
+        tGrab.setTypeface(font);
         tGrab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){

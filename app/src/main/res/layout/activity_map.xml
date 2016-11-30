@@ -73,6 +73,7 @@
         <ImageView
             android:layout_width="400dp"
             android:layout_height="400dp"
+
             android:id="@+id/mapdummymenu"
             android:src="@drawable/design_map_menu"
             android:layout_centerInParent="true"
