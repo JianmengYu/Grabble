@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
  * by Bill Phillips, Chris Stewart, Brian Hardy and Kristin Marsicano
  * copyright 2015 Big Nerd Ranch, LLC.
  */
-
+//TODO obsolete this activity
 public class ActivityAchievement extends SingleFragmentActivity {
 
     @Override

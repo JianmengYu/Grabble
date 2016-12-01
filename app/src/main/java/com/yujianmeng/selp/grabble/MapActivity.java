@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -44,8 +45,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Button mButtonMenu;
     //Dummy menu image
     private ImageView mMenu;
+    private ImageView mHelp;
     private GoogleApiClient mGoogleApiClient;
 
+    private Marker marker;
+    private ArrayList<Marker> markers = new ArrayList<Marker>();
 
 
     @Override
@@ -91,28 +95,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .position(george1)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
                 .title("Point1");
-        mMap.addMarker(marker1);
-
+        marker = mMap.addMarker(marker1);
+        markers.add(marker);
         LatLng george2 = new LatLng(55.942, -3.192);
         MarkerOptions marker2 = new MarkerOptions()
                 .position(george2)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
                 .title("Point2");
-        mMap.addMarker(marker2);
+        marker = mMap.addMarker(marker2);
+        markers.add(marker);
 
         LatLng george3 = new LatLng(55.946, -3.192);
         MarkerOptions marker3 = new MarkerOptions()
                 .position(george3)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
                 .title("Point3");
-        mMap.addMarker(marker3);
+        marker = mMap.addMarker(marker3);
+        markers.add(marker);
 
         LatLng george4 = new LatLng(55.942, -3.184);
         MarkerOptions marker4 = new MarkerOptions()
                 .position(george4)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
                 .title("Point4");
-        mMap.addMarker(marker4);
+        marker = mMap.addMarker(marker4);
+        markers.add(marker);
 
         //Sqaure markers
         LatLng pointsamp1 = new LatLng(55.943, -3.189);
@@ -120,21 +127,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .position(pointsamp1)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
                 .title("Point5");
-        mMap.addMarker(markersamp1);
+        marker = mMap.addMarker(markersamp1);
+        markers.add(marker);
 
         LatLng pointsamp2 = new LatLng(55.94352, -3.18944);
         MarkerOptions markersamp2 = new MarkerOptions()
                 .position(pointsamp2)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
                 .title("Point6");
-        mMap.addMarker(markersamp2);
+        marker = mMap.addMarker(markersamp2);
+        markers.add(marker);
 
         LatLng pointsamp3 = new LatLng(55.94378, -3.18912);
         MarkerOptions markersamp3 = new MarkerOptions()
                 .position(pointsamp3)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
                 .title("Point7");
-        mMap.addMarker(markersamp3);
+        marker = mMap.addMarker(markersamp3);
+        markers.add(marker);
+
         //TODO end of map dummy code
 
         //Initialize buttons on the map
@@ -145,6 +156,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mButtonGrabble = (Button) findViewById(R.id.button_grabble);
         mButtonMenu = (Button) findViewById(R.id.button_menu);
         mMenu = (ImageView) findViewById(R.id.mapdummymenu);
+        mHelp = (ImageView) findViewById(R.id.map_help);
 
         mButtonLeftTurn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,19 +225,27 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }, 5000);
             }
         });
-        mButtonHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),
-                        getString(R.string.main_help) + " button clicked, yay!",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
         mButtonGrabble.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), ActivityScrabble.class);
                 startActivity(i);
+            }
+        });
+        mButtonHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mHelp.getVisibility() == View.VISIBLE) {
+                    mHelp.setVisibility(View.INVISIBLE);
+                } else {
+                    mHelp.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        mHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHelp.setVisibility(View.INVISIBLE);
             }
         });
         mButtonMenu.setOnClickListener(new View.OnClickListener() {
@@ -238,6 +258,48 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
             }
         });
+        //TODO change menu image into functional buttons
+        mMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMenu.setVisibility(View.INVISIBLE);
+                Intent i = new Intent(getApplicationContext(), ActivityPager.class);
+                startActivity(i);
+            }
+        });
+
+        //Override marker click event
+        //TODO complete implement of marker click event
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                marker.remove();
+                //TODO add distance limit
+                Toast.makeText(getApplicationContext(),
+                        "Letter A collected!",
+                        Toast.LENGTH_SHORT).show();
+                        markers.remove(marker);
+                return true;
+            }
+        });
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                for(Marker m : markers){
+                    //TODO adjust item use case
+                    if(Math.abs(m.getPosition().latitude  - latLng.latitude)  < 0.00005 &&
+                       Math.abs(m.getPosition().longitude - latLng.longitude) < 0.00005) {
+                                                //Adjust Click Range Here
+                        Toast.makeText(MapActivity.this, "Letter A collected using grabber!",
+                                Toast.LENGTH_SHORT).show();
+                        m.remove();
+                        markers.remove(m);
+                        break;
+                    }
+                }
+            }
+        });
+
         // --- finish initializing, starting app ---
         disableControl();//Prevent Cheat, re-enable during camera initialization
 
@@ -270,7 +332,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     private void disableControl(){
-        //TODO finish this after adding other button
         mButtonLeftTurn.setEnabled(false);
         mButtonRightTurn.setEnabled(false);
         mButtonEagle.setEnabled(false);
