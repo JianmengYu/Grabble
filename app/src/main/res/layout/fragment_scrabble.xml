@@ -1,13 +1,433 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite">
+    android:background="@color/colorBGbrown">
 
-    <ImageView
+    <!--Layout of Level and exp button-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:id="@+id/scrabble_layout_levelexp"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="25dp"
+            android:background="@drawable/scrabble_button_text"
+            android:textColor="@color/colorFontBrown"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:layout_alignParentLeft="true"
+
+            android:id="@+id/scrabble_level_button"
+            android:text="Level: 20"/>
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="25dp"
+            android:background="@drawable/scrabble_button_text"
+            android:textColor="@color/colorFontBrown"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+
+            android:id="@+id/scrabble_exp_button"
+            android:text="Exp: 3400"/>
+
+    </RelativeLayout>
+
+    <!--Layout of input area-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:id="@+id/scrabble_layout_input"
+        android:background="@drawable/scrabble_temp_enrtry"
+        android:layout_below="@+id/scrabble_layout_levelexp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="43dp"
+                android:paddingLeft="1dp"
+                android:src="@drawable/scrabble_button_g"
+                android:id="@+id/scrabble_input_1"
+                android:layout_toLeftOf="@+id/scrabble_input_2"
+                android:layout_centerVertical="true"
+                />
+
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="43dp"
+                android:paddingLeft="1dp"
+                android:src="@drawable/scrabble_button_r"
+                android:id="@+id/scrabble_input_2"
+                android:layout_toLeftOf="@+id/scrabble_input_3"
+                android:layout_centerVertical="true"
+                />
+
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="43dp"
+                android:paddingLeft="1dp"
+                android:src="@drawable/scrabble_button_a"
+                android:id="@+id/scrabble_input_3"
+                android:layout_toLeftOf="@+id/scrabble_input_4"
+                android:layout_centerVertical="true"/>
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:padding="1dp"
+                android:src="@drawable/scrabble_button_b"
+                android:id="@+id/scrabble_input_4"
+                android:layout_centerInParent="true"/>
+
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="43dp"
+                android:paddingRight="1dp"
+                android:src="@drawable/scrabble_button_b"
+                android:id="@+id/scrabble_input_5"
+                android:layout_toRightOf="@+id/scrabble_input_4"
+                android:layout_centerVertical="true"/>
+
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="43dp"
+                android:paddingRight="1dp"
+                android:src="@drawable/scrabble_button_l"
+                android:id="@+id/scrabble_input_6"
+                android:layout_toRightOf="@+id/scrabble_input_5"
+                android:layout_centerVertical="true"/>
+
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="43dp"
+                android:paddingRight="1dp"
+                android:src="@drawable/scrabble_button_e"
+                android:id="@+id/scrabble_input_7"
+                android:layout_toRightOf="@+id/scrabble_input_6"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <!--Layout of score and discard button-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_below="@+id/scrabble_layout_input"
+        android:id="@+id/scrabble_layout_scorediscard">
+
+        <TextView
+            android:layout_width="140dp"
+            android:layout_height="25dp"
+            android:background="@drawable/scrabble_button_text"
+            android:textColor="@color/colorFontBrown"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:layout_alignParentLeft="true"
+
+            android:id="@+id/scrabble_score_button"
+            android:text="Total Score: 00"/>
+
+        <TextView
+            android:layout_width="85dp"
+            android:layout_height="25dp"
+            android:background="@drawable/scrabble_button_text"
+            android:textColor="@color/colorFontBrown"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+
+            android:id="@+id/scrabble_discard_button"
+            android:text="DISCARD"/>
+
+    </RelativeLayout>
+
+    <!--Layout of Keyboard-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="210dp"
+        android:id="@+id/scrabble_layout_keyboard"
+        android:background="@drawable/scrabble_temp_keyboard"
+        android:layout_above="@+id/scrabble_layout_bottompadding">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="45dp" />
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_a"
+                    android:id="@+id/scrabble_input_a"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_b"
+                    android:id="@+id/scrabble_input_b"
+                    />
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_c"
+                    android:id="@+id/scrabble_input_c"/>
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="1dp"
+                    android:src="@drawable/scrabble_button_d"
+                    android:id="@+id/scrabble_input_d"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_e"
+                    android:id="@+id/scrabble_input_e"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_f"
+                    android:id="@+id/scrabble_input_f"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_g"
+                    android:id="@+id/scrabble_input_g"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_h"
+                    android:id="@+id/scrabble_input_h"
+                    />
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_i"
+                    android:id="@+id/scrabble_input_i"/>
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="1dp"
+                    android:src="@drawable/scrabble_button_j"
+                    android:id="@+id/scrabble_input_j"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_k"
+                    android:id="@+id/scrabble_input_k"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_l"
+                    android:id="@+id/scrabble_input_l"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_m"
+                    android:id="@+id/scrabble_input_m"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_n"
+                    android:id="@+id/scrabble_input_n"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_o"
+                    android:id="@+id/scrabble_input_o"
+                    />
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_p"
+                    android:id="@+id/scrabble_input_p"/>
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="1dp"
+                    android:src="@drawable/scrabble_button_q"
+                    android:id="@+id/scrabble_input_q"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_r"
+                    android:id="@+id/scrabble_input_r"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_s"
+                    android:id="@+id/scrabble_input_s"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_t"
+                    android:id="@+id/scrabble_input_t"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="45dp" />
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_u"
+                    android:id="@+id/scrabble_input_u"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_v"
+                    android:id="@+id/scrabble_input_v"
+                    />
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/scrabble_button_w"
+                    android:id="@+id/scrabble_input_w"/>
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="1dp"
+                    android:src="@drawable/scrabble_button_x"
+                    android:id="@+id/scrabble_input_x"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_y"
+                    android:id="@+id/scrabble_input_y"/>
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="43dp"
+                    android:paddingRight="1dp"
+                    android:src="@drawable/scrabble_button_z"
+                    android:id="@+id/scrabble_input_z"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!---->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:src="@drawable/design_scrabble"
-        android:layout_gravity="center_horizontal" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:layout_below="@id/scrabble_layout_scorediscard">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Level Progress: (3400/3570)"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:textColor="@color/colorFontBrown"
+            android:id="@+id/scrabble_warning1"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:src="@drawable/scrabble_button_complete"
+            android:id="@+id/scrabble_complete_button"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="You don’t have any letter E!"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:textColor="@color/colorFontBrown"
+            android:id="@+id/scrabble_warning2"/>
+    </LinearLayout>
+
+    <!--A padding-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:id="@+id/scrabble_layout_bottompadding"
+        android:layout_alignParentBottom="true">
+    </RelativeLayout>
+</RelativeLayout>

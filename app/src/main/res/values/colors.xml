@@ -6,4 +6,9 @@
     <!--My color-->
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
+    <!--Design colors-->
+    <color name="colorBGbrown">#ece4d3</color>
+    <color name="colorBGgreen">#cbe6a3</color>
+    <color name="colorBGshade">#cbc189</color>
+    <color name="colorFontBrown">#2f0000</color>
 </resources>
