@@ -42,6 +42,10 @@ public class Grabble {
         return false;
     }
 
+    public int getAmount(char c){
+        return letters[charToInt(c)];
+    }
+
     public int getScore(){
         int score = 0;
         int i = inputpoint;
@@ -61,13 +65,16 @@ public class Grabble {
         return 0;
     }
 
-    public void enterLetter(char a){
+    public boolean enterLetter(char a){
+        //Return FALSE if the letter is successfully entered
         int i = charToInt(a);
         if (inputpoint < 7 && letters[i] > 0) {
             input[inputpoint] = alphabet.charAt(i);
             inputpoint++;
             letters[i]--;
+            return false;
         }
+        return true;
     }
 
     public void discardLetter(){

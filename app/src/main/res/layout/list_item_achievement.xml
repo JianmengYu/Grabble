@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="78dp"
+    android:paddingTop="4dp"
+    android:background="@color/colorBGbrown">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:padding="8dp"
+        android:id="@+id/achievement_bg"
+        android:background="@drawable/design_achievement_bg_f">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:id="@+id/achievement_image"
+            android:src="@drawable/achievement_icon_lock"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/achievement_image">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/achievement_name"
+                android:layout_gravity="center"
+                android:text="ACHIEVEMENT"
+                android:textSize="25dp"
+                android:textColor="@color/colorFontBrown"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/achievement_descript"
+                android:layout_gravity="center"
+                android:text="description meow meow meow~"
+                android:textSize="10dp"
+                android:textColor="@color/colorFontBrown"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/achievement_time"
+                android:layout_gravity="right"
+                android:text="tomorrow"
+                android:textSize="10dp"
+                android:textColor="@color/colorFontBrown"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

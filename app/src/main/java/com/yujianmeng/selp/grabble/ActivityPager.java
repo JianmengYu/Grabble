@@ -24,5 +24,6 @@ public class ActivityPager extends FragmentActivity {
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(4);//Prevent Achievement List got destroyed
     }
 }

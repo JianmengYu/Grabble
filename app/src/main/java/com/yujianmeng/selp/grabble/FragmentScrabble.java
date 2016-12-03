@@ -15,7 +15,7 @@ import android.widget.Toast;
  * Created by YuJianmeng on 2016/10/6.
  */
 
-public class FragmentScrabble extends Fragment implements View.OnClickListener{
+public class FragmentScrabble extends Fragment{
 
     private TextView mLevel;
     private TextView mExp;
@@ -134,45 +134,151 @@ public class FragmentScrabble extends Fragment implements View.OnClickListener{
         mButtonX = (ImageView) view.findViewById(R.id.scrabble_input_x);
         mButtonY = (ImageView) view.findViewById(R.id.scrabble_input_y);
         mButtonZ = (ImageView) view.findViewById(R.id.scrabble_input_z);
-        mButtonA.setOnClickListener(this);
-        mButtonB.setOnClickListener(this);
-        mButtonC.setOnClickListener(this);
-        mButtonD.setOnClickListener(this);
-        mButtonE.setOnClickListener(this);
-        mButtonF.setOnClickListener(this);
-        mButtonG.setOnClickListener(this);
-        mButtonH.setOnClickListener(this);
-        mButtonI.setOnClickListener(this);
-        mButtonJ.setOnClickListener(this);
-        mButtonK.setOnClickListener(this);
-        mButtonL.setOnClickListener(this);
-        mButtonM.setOnClickListener(this);
-        mButtonN.setOnClickListener(this);
-        mButtonO.setOnClickListener(this);
-        mButtonP.setOnClickListener(this);
-        mButtonQ.setOnClickListener(this);
-        mButtonR.setOnClickListener(this);
-        mButtonS.setOnClickListener(this);
-        mButtonT.setOnClickListener(this);
-        mButtonU.setOnClickListener(this);
-        mButtonV.setOnClickListener(this);
-        mButtonW.setOnClickListener(this);
-        mButtonX.setOnClickListener(this);
-        mButtonY.setOnClickListener(this);
-        mButtonZ.setOnClickListener(this);
 
-        mComplete.setOnClickListener(this);
-        mDiscard.setOnClickListener(this);
-        mDiscard.setOnLongClickListener(new View.OnLongClickListener() {
+        //Set the detail function of the short clicks.
+        View.OnClickListener shortListener = new View.OnClickListener(){
             @Override
-            public boolean onLongClick(View v) {
-                grabble.discardAll();
-                updateUI();
-                return false;
-            }
-        });
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    //Prompt the player if the letter is not Entered
+                    //TODO remake the enter letter system.
+                    case R.id.scrabble_input_a: if(grabble.enterLetter('a')){constructString('a',2);}; updateUI(); break;
+                    case R.id.scrabble_input_b: if(grabble.enterLetter('b')){constructString('b',2);}; updateUI(); break;
+                    case R.id.scrabble_input_c: if(grabble.enterLetter('c')){constructString('c',2);}; updateUI(); break;
+                    case R.id.scrabble_input_d: if(grabble.enterLetter('d')){constructString('d',2);}; updateUI(); break;
+                    case R.id.scrabble_input_e: if(grabble.enterLetter('e')){constructString('e',2);}; updateUI(); break;
+                    case R.id.scrabble_input_f: if(grabble.enterLetter('f')){constructString('f',2);}; updateUI(); break;
+                    case R.id.scrabble_input_g: if(grabble.enterLetter('g')){constructString('g',2);}; updateUI(); break;
+                    case R.id.scrabble_input_h: if(grabble.enterLetter('h')){constructString('h',2);}; updateUI(); break;
+                    case R.id.scrabble_input_i: if(grabble.enterLetter('i')){constructString('i',2);}; updateUI(); break;
+                    case R.id.scrabble_input_j: if(grabble.enterLetter('j')){constructString('j',2);}; updateUI(); break;
+                    case R.id.scrabble_input_k: if(grabble.enterLetter('k')){constructString('k',2);}; updateUI(); break;
+                    case R.id.scrabble_input_l: if(grabble.enterLetter('l')){constructString('l',2);}; updateUI(); break;
+                    case R.id.scrabble_input_m: if(grabble.enterLetter('m')){constructString('m',2);}; updateUI(); break;
+                    case R.id.scrabble_input_n: if(grabble.enterLetter('n')){constructString('n',2);}; updateUI(); break;
+                    case R.id.scrabble_input_o: if(grabble.enterLetter('o')){constructString('o',2);}; updateUI(); break;
+                    case R.id.scrabble_input_p: if(grabble.enterLetter('p')){constructString('p',2);}; updateUI(); break;
+                    case R.id.scrabble_input_q: if(grabble.enterLetter('q')){constructString('q',2);}; updateUI(); break;
+                    case R.id.scrabble_input_r: if(grabble.enterLetter('r')){constructString('r',2);}; updateUI(); break;
+                    case R.id.scrabble_input_s: if(grabble.enterLetter('s')){constructString('s',2);}; updateUI(); break;
+                    case R.id.scrabble_input_t: if(grabble.enterLetter('t')){constructString('t',2);}; updateUI(); break;
+                    case R.id.scrabble_input_u: if(grabble.enterLetter('u')){constructString('u',2);}; updateUI(); break;
+                    case R.id.scrabble_input_v: if(grabble.enterLetter('v')){constructString('v',2);}; updateUI(); break;
+                    case R.id.scrabble_input_w: if(grabble.enterLetter('w')){constructString('w',2);}; updateUI(); break;
+                    case R.id.scrabble_input_x: if(grabble.enterLetter('x')){constructString('x',2);}; updateUI(); break;
+                    case R.id.scrabble_input_y: if(grabble.enterLetter('y')){constructString('y',2);}; updateUI(); break;
+                    case R.id.scrabble_input_z: if(grabble.enterLetter('z')){constructString('z',2);}; updateUI(); break;
 
-        //Temp stuff
+                    case R.id.scrabble_complete_button:
+                        if (grabble.getPoint() == 7){
+                            addScore(grabble.completeWord());
+                        };break;
+                    case R.id.scrabble_discard_button:
+                        grabble.discardLetter();
+                        updateUI();
+                        break;
+                }
+            }
+        };
+        mButtonA.setOnClickListener(shortListener);
+        mButtonB.setOnClickListener(shortListener);
+        mButtonC.setOnClickListener(shortListener);
+        mButtonD.setOnClickListener(shortListener);
+        mButtonE.setOnClickListener(shortListener);
+        mButtonF.setOnClickListener(shortListener);
+        mButtonG.setOnClickListener(shortListener);
+        mButtonH.setOnClickListener(shortListener);
+        mButtonI.setOnClickListener(shortListener);
+        mButtonJ.setOnClickListener(shortListener);
+        mButtonK.setOnClickListener(shortListener);
+        mButtonL.setOnClickListener(shortListener);
+        mButtonM.setOnClickListener(shortListener);
+        mButtonN.setOnClickListener(shortListener);
+        mButtonO.setOnClickListener(shortListener);
+        mButtonP.setOnClickListener(shortListener);
+        mButtonQ.setOnClickListener(shortListener);
+        mButtonR.setOnClickListener(shortListener);
+        mButtonS.setOnClickListener(shortListener);
+        mButtonT.setOnClickListener(shortListener);
+        mButtonU.setOnClickListener(shortListener);
+        mButtonV.setOnClickListener(shortListener);
+        mButtonW.setOnClickListener(shortListener);
+        mButtonX.setOnClickListener(shortListener);
+        mButtonY.setOnClickListener(shortListener);
+        mButtonZ.setOnClickListener(shortListener);
+
+        mComplete.setOnClickListener(shortListener);
+        mDiscard.setOnClickListener(shortListener);
+
+        //Set the detail function of the long clicks.
+        View.OnLongClickListener longListener = new View.OnLongClickListener() {
+            public boolean onLongClick(View v) {
+                switch (v.getId()) {
+                    // ConstructString sets the text of mWarning2 to string "You have n letter x left"
+                    // taking the letter x as input, the 1 is used to distinguish different use.
+                    case R.id.scrabble_input_a: constructString('a',1); updateUI(); break;
+                    case R.id.scrabble_input_b: constructString('b',1); updateUI(); break;
+                    case R.id.scrabble_input_c: constructString('c',1); updateUI(); break;
+                    case R.id.scrabble_input_d: constructString('d',1); updateUI(); break;
+                    case R.id.scrabble_input_e: constructString('e',1); updateUI(); break;
+                    case R.id.scrabble_input_f: constructString('f',1); updateUI(); break;
+                    case R.id.scrabble_input_g: constructString('g',1); updateUI(); break;
+                    case R.id.scrabble_input_h: constructString('h',1); updateUI(); break;
+                    case R.id.scrabble_input_i: constructString('i',1); updateUI(); break;
+                    case R.id.scrabble_input_j: constructString('j',1); updateUI(); break;
+                    case R.id.scrabble_input_k: constructString('k',1); updateUI(); break;
+                    case R.id.scrabble_input_l: constructString('l',1); updateUI(); break;
+                    case R.id.scrabble_input_m: constructString('m',1); updateUI(); break;
+                    case R.id.scrabble_input_n: constructString('n',1); updateUI(); break;
+                    case R.id.scrabble_input_o: constructString('o',1); updateUI(); break;
+                    case R.id.scrabble_input_p: constructString('p',1); updateUI(); break;
+                    case R.id.scrabble_input_q: constructString('q',1); updateUI(); break;
+                    case R.id.scrabble_input_r: constructString('r',1); updateUI(); break;
+                    case R.id.scrabble_input_s: constructString('s',1); updateUI(); break;
+                    case R.id.scrabble_input_t: constructString('t',1); updateUI(); break;
+                    case R.id.scrabble_input_u: constructString('u',1); updateUI(); break;
+                    case R.id.scrabble_input_v: constructString('v',1); updateUI(); break;
+                    case R.id.scrabble_input_w: constructString('w',1); updateUI(); break;
+                    case R.id.scrabble_input_x: constructString('x',1); updateUI(); break;
+                    case R.id.scrabble_input_y: constructString('y',1); updateUI(); break;
+                    case R.id.scrabble_input_z: constructString('z',1); updateUI(); break;
+                    case R.id.scrabble_discard_button:
+                        grabble.discardAll();
+                        updateUI(); break;
+                }
+                return true;
+            }
+        };
+        mButtonA.setOnLongClickListener(longListener);
+        mButtonB.setOnLongClickListener(longListener);
+        mButtonC.setOnLongClickListener(longListener);
+        mButtonD.setOnLongClickListener(longListener);
+        mButtonE.setOnLongClickListener(longListener);
+        mButtonF.setOnLongClickListener(longListener);
+        mButtonG.setOnLongClickListener(longListener);
+        mButtonH.setOnLongClickListener(longListener);
+        mButtonI.setOnLongClickListener(longListener);
+        mButtonJ.setOnLongClickListener(longListener);
+        mButtonK.setOnLongClickListener(longListener);
+        mButtonL.setOnLongClickListener(longListener);
+        mButtonM.setOnLongClickListener(longListener);
+        mButtonN.setOnLongClickListener(longListener);
+        mButtonO.setOnLongClickListener(longListener);
+        mButtonP.setOnLongClickListener(longListener);
+        mButtonQ.setOnLongClickListener(longListener);
+        mButtonR.setOnLongClickListener(longListener);
+        mButtonS.setOnLongClickListener(longListener);
+        mButtonT.setOnLongClickListener(longListener);
+        mButtonU.setOnLongClickListener(longListener);
+        mButtonV.setOnLongClickListener(longListener);
+        mButtonW.setOnLongClickListener(longListener);
+        mButtonX.setOnLongClickListener(longListener);
+        mButtonY.setOnLongClickListener(longListener);
+        mButtonZ.setOnLongClickListener(longListener);
+
+        mDiscard.setOnLongClickListener(longListener);
+
+        //TODO remove test cheat layout
         mInput = (RelativeLayout) view.findViewById(R.id.scrabble_layout_input);
         mInput.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +306,7 @@ public class FragmentScrabble extends Fragment implements View.OnClickListener{
     }
 
     public void updateUI(){
+        //Update all the UI elements.
         score = grabble.getScore();
         char[] input = grabble.getInput();
         int point = grabble.getPoint();
@@ -222,45 +329,25 @@ public class FragmentScrabble extends Fragment implements View.OnClickListener{
         mScore.setText("Total Score: "+score);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.scrabble_input_a: grabble.enterLetter('a'); updateUI(); break;
-            case R.id.scrabble_input_b: grabble.enterLetter('b'); updateUI(); break;
-            case R.id.scrabble_input_c: grabble.enterLetter('c'); updateUI(); break;
-            case R.id.scrabble_input_d: grabble.enterLetter('d'); updateUI(); break;
-            case R.id.scrabble_input_e: grabble.enterLetter('e'); updateUI(); break;
-            case R.id.scrabble_input_f: grabble.enterLetter('f'); updateUI(); break;
-            case R.id.scrabble_input_g: grabble.enterLetter('g'); updateUI(); break;
-            case R.id.scrabble_input_h: grabble.enterLetter('h'); updateUI(); break;
-            case R.id.scrabble_input_i: grabble.enterLetter('i'); updateUI(); break;
-            case R.id.scrabble_input_j: grabble.enterLetter('j'); updateUI(); break;
-            case R.id.scrabble_input_k: grabble.enterLetter('k'); updateUI(); break;
-            case R.id.scrabble_input_l: grabble.enterLetter('l'); updateUI(); break;
-            case R.id.scrabble_input_m: grabble.enterLetter('m'); updateUI(); break;
-            case R.id.scrabble_input_n: grabble.enterLetter('n'); updateUI(); break;
-            case R.id.scrabble_input_o: grabble.enterLetter('o'); updateUI(); break;
-            case R.id.scrabble_input_p: grabble.enterLetter('p'); updateUI(); break;
-            case R.id.scrabble_input_q: grabble.enterLetter('q'); updateUI(); break;
-            case R.id.scrabble_input_r: grabble.enterLetter('r'); updateUI(); break;
-            case R.id.scrabble_input_s: grabble.enterLetter('s'); updateUI(); break;
-            case R.id.scrabble_input_t: grabble.enterLetter('t'); updateUI(); break;
-            case R.id.scrabble_input_u: grabble.enterLetter('u'); updateUI(); break;
-            case R.id.scrabble_input_v: grabble.enterLetter('v'); updateUI(); break;
-            case R.id.scrabble_input_w: grabble.enterLetter('w'); updateUI(); break;
-            case R.id.scrabble_input_x: grabble.enterLetter('x'); updateUI(); break;
-            case R.id.scrabble_input_y: grabble.enterLetter('y'); updateUI(); break;
-            case R.id.scrabble_input_z: grabble.enterLetter('z'); updateUI(); break;
-
-            case R.id.scrabble_complete_button:
-                if (grabble.getPoint() == 7){
-                    addScore(grabble.completeWord());
-                };break;
-            case R.id.scrabble_discard_button:
-                grabble.discardLetter();
-                updateUI();
-                break;
+    public void constructString(char c, int type){
+        //Construct different hints, case 1 is check amount of letter left,
+        //                           case 2 tells player there are no letter left;
+        int amount = grabble.getAmount(c);
+        switch (type){
+            case 1: if (amount == 0){
+                        mWarning2.setText("You have " + "no" +
+                        " letter " + Character.toUpperCase(c) +
+                        " Left.");
+                    }else{
+                        mWarning2.setText("You have " + grabble.getAmount(c) +
+                        " letter " + Character.toUpperCase(c) +
+                        " Left.");
+                    }break;
+            case 2: mWarning2.setText("You don't have any letter " +
+                                        Character.toUpperCase(c) +
+                                        " Left!");break;
         }
+
     }
 }
 
