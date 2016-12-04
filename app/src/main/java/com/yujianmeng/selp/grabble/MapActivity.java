@@ -51,6 +51,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Marker marker;
     private ArrayList<Marker> markers = new ArrayList<Marker>();
 
+    private LatLng mMyLocation;
+    private float mMyBearing;
+    private boolean zooming = false;//for test
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,6 +203,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onClick(View v) {
                 CameraPosition temp = mMap.getCameraPosition();
+                zooming = true;
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                         new CameraPosition.Builder(temp).zoom(temp.zoom - 2).build()
                 ));
@@ -215,6 +220,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                     @Override
                                     public void onFinish() {
                                         enableControl();
+                                        zooming = false;
                                     }//Return controls
 
                                     @Override
@@ -285,6 +291,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                boolean moved = true;//----------------------TEST
                 for(Marker m : markers){
                     //TODO adjust item use case
                     if(Math.abs(m.getPosition().latitude  - latLng.latitude)  < 0.00005 &&
@@ -294,9 +301,43 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                 Toast.LENGTH_SHORT).show();
                         m.remove();
                         markers.remove(m);
+                        moved = false;//------------TEST
                         break;
                     }
                 }
+                //TODO remove following move code.
+                if (moved && !zooming){
+                disableControl();
+                CameraPosition temp = mMap.getCameraPosition();
+                boolean inRange = isInRange(latLng,0.0005);
+                if(inRange){
+                    mMyBearing = temp.bearing;
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition.Builder(temp)
+                                    .target(latLng)//Initial location
+                                    .build()),
+                            new GoogleMap.CancelableCallback() {
+                                @Override
+                                public void onFinish() {enableControl();}//Return controls
+                                @Override
+                                public void onCancel() {}
+                            });
+                }else{
+                    mMyBearing = (float) newBearing(latLng);
+                    mMyLocation = latLng;
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition.Builder(temp)
+                                    .target(mMyLocation)//Initial location
+                                    .bearing(mMyBearing)
+                                    .build()),
+                            new GoogleMap.CancelableCallback() {
+                                @Override
+                                public void onFinish() {enableControl();}//Return controls
+                                @Override
+                                public void onCancel() {}
+                            });
+                }}
+                //TODO end of test move code
             }
         });
 
@@ -316,8 +357,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         LatLng myLatLng = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
         */
 
+        mMyLocation = pointsamp1;
         CameraPosition testAngle = new CameraPosition.Builder()
-                .target(pointsamp1)//Initial location
+                .target(mMyLocation)//Initial location
                 .zoom(19)
                 .bearing(0)
                 .tilt(45)
@@ -348,5 +390,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setIndoorLevelPickerEnabled(false);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
+    }
+
+    private boolean isInRange(LatLng latLng, double range){
+        double lat = Math.abs(mMyLocation.latitude  - latLng.latitude);
+        double lng = Math.abs(mMyLocation.longitude  - latLng.longitude);
+        return (range > Math.sqrt(Math.pow(lat,2) + Math.pow(lng,2)));
+    }
+
+    private double newBearing(LatLng latLng){
+        //http://stackoverflow.com/questions/9457988/bearing-from-one-coordinate-to-another
+        //with corrected toDegrees function;
+        double srcLat = Math.toRadians(mMyLocation.latitude);
+        double dstLat = Math.toRadians(latLng.latitude);
+        double dLng = Math.toRadians(latLng.longitude - mMyLocation.longitude);
+
+        double returnRad = Math.atan2(Math.sin(dLng) * Math.cos(dstLat),
+                            Math.cos(srcLat) * Math.sin(dstLat) -
+                            Math.sin(srcLat) * Math.cos(dstLat) * Math.cos(dLng));
+        return Math.toDegrees((returnRad + 2 * Math.PI) % (2 * Math.PI));
     }
 }

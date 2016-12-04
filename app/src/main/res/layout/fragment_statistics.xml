@@ -1,12 +1,384 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBGgreen">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageViewStat"
-        android:src="@drawable/design_statistics"
-        android:layout_gravity="center_horizontal" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGgreen">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_01"
+            android:id="@+id/statistics_01_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="999"
+            android:id="@+id/statistics_01_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGbrown">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_02"
+            android:id="@+id/statistics_02_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="99"
+            android:id="@+id/statistics_02_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGgreen">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_03"
+            android:id="@+id/statistics_03_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="99"
+            android:id="@+id/statistics_03_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGbrown">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_04"
+            android:id="@+id/statistics_04_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="E"
+            android:id="@+id/statistics_04_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGgreen">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_05"
+            android:id="@+id/statistics_05_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="Monkeys"
+            android:id="@+id/statistics_05_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGbrown">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_06"
+            android:id="@+id/statistics_06_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="99"
+            android:id="@+id/statistics_06_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGgreen">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_07"
+            android:id="@+id/statistics_07_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="Zombify"
+            android:id="@+id/statistics_07_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGbrown">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_08"
+            android:id="@+id/statistics_08_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="999"
+            android:id="@+id/statistics_08_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGgreen">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_09"
+            android:id="@+id/statistics_09_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="99"
+            android:id="@+id/statistics_09_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGbrown">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_10"
+            android:id="@+id/statistics_10_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="39.8km"
+            android:id="@+id/statistics_10_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGgreen">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_11"
+            android:id="@+id/statistics_11_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="3.5km"
+            android:id="@+id/statistics_11_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGbrown">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_12"
+            android:id="@+id/statistics_12_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="99"
+            android:id="@+id/statistics_12_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorBGgreen">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/statistics_13"
+            android:id="@+id/statistics_13_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="999"
+            android:id="@+id/statistics_13_value"/>
+
+    </RelativeLayout>
 </LinearLayout>
