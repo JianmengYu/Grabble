@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -43,8 +44,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Button mButtonHelp;
     private Button mButtonGrabble;
     private Button mButtonMenu;
-    //Dummy menu image
-    private ImageView mMenu;
+    private RelativeLayout mMenu;
+    private ImageView mMenuAchievement;
+    private ImageView mMenuStatistics;
+    private ImageView mMenuSettings;
+    private ImageView mMenuAbout;
     private ImageView mHelp;
     private GoogleApiClient mGoogleApiClient;
 
@@ -159,8 +163,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mButtonHelp = (Button) findViewById(R.id.button_help);
         mButtonGrabble = (Button) findViewById(R.id.button_grabble);
         mButtonMenu = (Button) findViewById(R.id.button_menu);
-        mMenu = (ImageView) findViewById(R.id.mapdummymenu);
+        mMenu = (RelativeLayout) findViewById(R.id.map_layout_menu);
         mHelp = (ImageView) findViewById(R.id.map_help);
+        mMenuAchievement = (ImageView) findViewById(R.id.map_menu_achievement);
+        mMenuStatistics = (ImageView) findViewById(R.id.map_menu_statistics);
+        mMenuSettings = (ImageView) findViewById(R.id.map_menu_settings);
+        mMenuAbout = (ImageView) findViewById(R.id.map_menu_about);
 
         mButtonLeftTurn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -264,12 +272,39 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
             }
         });
-        //TODO change menu image into functional buttons
-        mMenu.setOnClickListener(new View.OnClickListener() {
+        //http://stackoverflow.com/questions/28177882/is-it-possible-to-go-to-a-specific-page-of-a-viewpager-from-other-activity
+        mMenuAchievement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMenu.setVisibility(View.INVISIBLE);
                 Intent i = new Intent(getApplicationContext(), ActivityPager.class);
+                startActivity(i);
+            }
+        });
+        mMenuStatistics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMenu.setVisibility(View.INVISIBLE);
+                Intent i = new Intent(getApplicationContext(), ActivityPager.class);
+                i.putExtra("EXTRA_PAGE",1);
+                startActivity(i);
+            }
+        });
+        mMenuSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMenu.setVisibility(View.INVISIBLE);
+                Intent i = new Intent(getApplicationContext(), ActivityPager.class);
+                i.putExtra("EXTRA_PAGE",2);
+                startActivity(i);
+            }
+        });
+        mMenuAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMenu.setVisibility(View.INVISIBLE);
+                Intent i = new Intent(getApplicationContext(), ActivityPager.class);
+                i.putExtra("EXTRA_PAGE",3);
                 startActivity(i);
             }
         });

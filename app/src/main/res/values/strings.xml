@@ -44,4 +44,15 @@
     <string name="setting_04_description">A more balanced mode. (NOT reversable)</string>
     <string name="setting_05_description">Clear All of the play data. (NOT reversable)</string>
 
+    <!--About Page Strings-->
+    <string name="about_current_version">Current Version:</string>
+    <string name="about_required_system">Required API Level:</string>
+    <string name="about_required_google">Required Google Play Level:</string>
+    <string name="about_your_system">Your Android Version:</string>
+    <string name="about_your_google">Your Google Play Version:</string>
+    <string name="about_your_api">Your API Level:</string>
+    <string name="about_temp_version">1.0.0</string>
+    <string name="about_temp_range">15 - 23</string>
+    <string name="about_temp_google">8.4.0</string>
+
 </resources>

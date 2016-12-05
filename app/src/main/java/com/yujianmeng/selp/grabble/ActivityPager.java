@@ -25,5 +25,12 @@ public class ActivityPager extends FragmentActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(4);//Prevent Achievement List got destroyed
+
+        //http://stackoverflow.com/questions/28177882/is-it-possible-to-go-to-a-specific-page-of-a-viewpager-from-other-activity
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            int position= extras.getInt("EXTRA_PAGE");
+            viewPager.setCurrentItem(position);
+        }
     }
 }

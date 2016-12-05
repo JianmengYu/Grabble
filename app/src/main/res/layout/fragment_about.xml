@@ -1,13 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBGbrown">
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageViewabout"
-        android:src="@drawable/design_about"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="100dp"
+        android:id="@+id/about_title"
+        android:src="@drawable/design_about_title"
+        android:layout_gravity="top" />
 
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/about_layout_1"
+        android:layout_below="@id/about_title">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/about_current_version"
+            android:id="@+id/about_1_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/about_temp_version"
+            android:id="@+id/about_1_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/about_layout_2"
+        android:layout_below="@id/about_layout_1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/about_required_system"
+            android:id="@+id/about_2_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/about_temp_range"
+            android:id="@+id/about_2_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/about_layout_3"
+        android:layout_below="@id/about_layout_2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/about_required_google"
+            android:id="@+id/about_3_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/about_temp_google"
+            android:id="@+id/about_3_value"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/about_layout_4"
+        android:layout_below="@id/about_layout_3">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/about_layout_5"
+        android:layout_below="@id/about_layout_4">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/about_your_system"
+            android:id="@+id/about_5_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="YOUR SYSTEM"
+            android:id="@+id/about_your_system"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/about_layout_6"
+        android:layout_below="@id/about_layout_5">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/about_your_api"
+            android:id="@+id/about_6_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="YOUR API"
+            android:id="@+id/about_your_api"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:id="@+id/about_layout_7"
+        android:layout_below="@id/about_layout_6">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="@string/about_your_google"
+            android:id="@+id/about_7_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingRight="30dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorFontBrown"
+            android:text="GOOGLE"
+            android:id="@+id/about_your_google"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:src="@drawable/design_about_share"
+        android:id="@+id/about_share_button"
+        android:layout_above="@+id/about_me"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:id="@+id/about_me"
+        android:src="@drawable/design_about_me"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
