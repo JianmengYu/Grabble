@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +31,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedReader;
 import java.io.FileDescriptor;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -55,10 +59,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Marker marker;
     private ArrayList<Marker> markers = new ArrayList<Marker>();
 
-    private LatLng mMyLocation;
+    private LatLng mMyLocation;//For camera
+    private LatLng mMyLocation2;//Actual location
     private float mMyBearing;
     private boolean zooming = false;//for test
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +99,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        //TODO complete readKML
+        readKml();
         //TODO implement map,remove dummy code
         //Dummy code, add a randonm point in GS and zoom to it
         //Dummy markers - 4 corners
+        /*
         LatLng george1 = new LatLng(55.946, -3.184);
         MarkerOptions marker1 = new MarkerOptions()
                 .position(george1)
@@ -128,32 +136,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .title("Point4");
         marker = mMap.addMarker(marker4);
         markers.add(marker);
-
+        */
         //Sqaure markers
         LatLng pointsamp1 = new LatLng(55.943, -3.189);
-        MarkerOptions markersamp1 = new MarkerOptions()
-                .position(pointsamp1)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
-                .title("Point5");
-        marker = mMap.addMarker(markersamp1);
-        markers.add(marker);
-
-        LatLng pointsamp2 = new LatLng(55.94352, -3.18944);
-        MarkerOptions markersamp2 = new MarkerOptions()
-                .position(pointsamp2)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
-                .title("Point6");
-        marker = mMap.addMarker(markersamp2);
-        markers.add(marker);
-
-        LatLng pointsamp3 = new LatLng(55.94378, -3.18912);
-        MarkerOptions markersamp3 = new MarkerOptions()
-                .position(pointsamp3)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
-                .title("Point7");
-        marker = mMap.addMarker(markersamp3);
-        markers.add(marker);
-
+        //TEMP start location
         //TODO end of map dummy code
 
         //Initialize buttons on the map
@@ -213,7 +199,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 CameraPosition temp = mMap.getCameraPosition();
                 zooming = true;
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                        new CameraPosition.Builder(temp).zoom(temp.zoom - 2).build()
+                        new CameraPosition.Builder(temp).zoom(temp.zoom - 1).build()
                 ));
                 disableControl();//Disable the control temporarily to prevent cheat.
                 Handler handler = new Handler();
@@ -222,7 +208,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     public void run() {
                         CameraPosition temp = mMap.getCameraPosition();
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                                new CameraPosition.Builder(temp).zoom(temp.zoom + 2).build()
+                                new CameraPosition.Builder(temp).zoom(temp.zoom + 1).build()
                                 ),
                                 new GoogleMap.CancelableCallback() {
                                     @Override
@@ -314,12 +300,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                marker.remove();
-                //TODO add distance limit
-                Toast.makeText(getApplicationContext(),
-                        "Letter A collected!",
+                if(isInRange(mMyLocation2,marker.getPosition(),0.0003)){
+                    marker.remove();
+                    markers.remove(marker);
+                    Toast.makeText(getApplicationContext(),
+                        "Letter " + marker.getTitle() + " collected!",
                         Toast.LENGTH_SHORT).show();
-                        markers.remove(marker);
+                }else{
+                    Toast.makeText(getApplicationContext(),
+                            "Too Far!",
+                            Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
         });
@@ -332,7 +323,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     if(Math.abs(m.getPosition().latitude  - latLng.latitude)  < 0.00005 &&
                        Math.abs(m.getPosition().longitude - latLng.longitude) < 0.00005) {
                                                 //Adjust Click Range Here
-                        Toast.makeText(MapActivity.this, "Letter A collected using grabber!",
+                        Toast.makeText(MapActivity.this, "Letter " + m.getTitle() + " collected using grabber!",
                                 Toast.LENGTH_SHORT).show();
                         m.remove();
                         markers.remove(m);
@@ -344,8 +335,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 if (moved && !zooming){
                 disableControl();
                 CameraPosition temp = mMap.getCameraPosition();
-                boolean inRange = isInRange(latLng,0.0005);
+                boolean inRange = isInRange(mMyLocation,latLng,0.0005);
                 if(inRange){
+                    mMyLocation2 = latLng;
                     mMyBearing = temp.bearing;
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder(temp)
@@ -360,6 +352,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }else{
                     mMyBearing = (float) newBearing(latLng);
                     mMyLocation = latLng;
+                    mMyLocation2 = latLng;
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder(temp)
                                     .target(mMyLocation)//Initial location
@@ -391,8 +384,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         Location myLocation = mMap.getMyLocation();//Useless!
         LatLng myLatLng = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
         */
-
         mMyLocation = pointsamp1;
+        mMyLocation2 = pointsamp1;
+
+
         CameraPosition testAngle = new CameraPosition.Builder()
                 .target(mMyLocation)//Initial location
                 .zoom(19)
@@ -427,9 +422,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.getUiSettings().setTiltGesturesEnabled(false);
     }
 
-    private boolean isInRange(LatLng latLng, double range){
-        double lat = Math.abs(mMyLocation.latitude  - latLng.latitude);
-        double lng = Math.abs(mMyLocation.longitude  - latLng.longitude);
+    private boolean isInRange(LatLng latLng, LatLng latLng2, double range){
+        double lat = Math.abs(latLng.latitude  - latLng2.latitude);
+        double lng = Math.abs(latLng.longitude  - latLng2.longitude);
         return (range > Math.sqrt(Math.pow(lat,2) + Math.pow(lng,2)));
     }
 
@@ -444,5 +439,67 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             Math.cos(srcLat) * Math.sin(dstLat) -
                             Math.sin(srcLat) * Math.cos(dstLat) * Math.cos(dLng));
         return Math.toDegrees((returnRad + 2 * Math.PI) % (2 * Math.PI));
+    }
+
+    private void readKml(){
+        //http://stackoverflow.com/questions/1140144/read-and-parse-kml-in-java
+        try {
+            InputStream json = getApplicationContext().getAssets().open("sunday.kml");
+            BufferedReader in = new BufferedReader(new InputStreamReader(json));
+            String str;
+            Character name = null;
+            LatLng latLng;
+            while ((str = in.readLine()) != null){
+                if (str.contains("<description>")){
+                    str = str.replace("<description>", "").replace("</description>", "").replace(" ","");
+                    name = str.charAt(0);
+                }
+                if (str.contains("<coordinates>")){
+                    str = str.replace("<coordinates>", "").replace("</coordinates>", "").replace(" ","");
+                    String[] coord = str.split(",");
+                    latLng = new LatLng(Double.valueOf(coord[1]),Double.valueOf(coord[0]));
+                    //TODO change add marker to add in database
+                    marker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(name.toString())
+                            .icon(BitmapDescriptorFactory.fromResource(getImageString(name))));
+                    markers.add(marker);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getImageString(char name){
+        switch (name){
+            case 'A':return R.drawable.map_pickable_a;
+            case 'B':return R.drawable.map_pickable_b;
+            case 'C':return R.drawable.map_pickable_c;
+            case 'D':return R.drawable.map_pickable_d;
+            case 'E':return R.drawable.map_pickable_e;
+            case 'F':return R.drawable.map_pickable_f;
+            case 'G':return R.drawable.map_pickable_g;
+            case 'H':return R.drawable.map_pickable_h;
+            case 'I':return R.drawable.map_pickable_i;
+            case 'J':return R.drawable.map_pickable_j;
+            case 'K':return R.drawable.map_pickable_k;
+            case 'L':return R.drawable.map_pickable_l;
+            case 'M':return R.drawable.map_pickable_m;
+            case 'N':return R.drawable.map_pickable_n;
+            case 'O':return R.drawable.map_pickable_o;
+            case 'P':return R.drawable.map_pickable_p;
+            case 'Q':return R.drawable.map_pickable_q;
+            case 'R':return R.drawable.map_pickable_r;
+            case 'S':return R.drawable.map_pickable_s;
+            case 'T':return R.drawable.map_pickable_t;
+            case 'U':return R.drawable.map_pickable_u;
+            case 'V':return R.drawable.map_pickable_v;
+            case 'W':return R.drawable.map_pickable_w;
+            case 'X':return R.drawable.map_pickable_x;
+            case 'Y':return R.drawable.map_pickable_y;
+            case 'Z':return R.drawable.map_pickable_z;
+            default:return R.drawable.map_pickable;
+        }
     }
 }
