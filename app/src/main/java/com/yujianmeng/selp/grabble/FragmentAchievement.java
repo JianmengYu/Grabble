@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,19 +84,39 @@ public class FragmentAchievement extends Fragment {
 
         public void bindAchievement(Achievement achievement){
             mAchievement = achievement;
-            completed = mAchievement.getmDate() != null;
+            completed = !mAchievement.getmDate().equals("No Unlocked Yet");
             mName.setText(mAchievement.getmName());
             if(completed){
                 mImage.setImageResource(mAchievement.getImageString());
                 mBG.setBackgroundResource(R.drawable.design_achievement_bg_t);
                 mDescription.setText(mAchievement.getmDescription());
-                mDate.setText(mAchievement.getmDate().toString());
+                mDate.setText(mAchievement.getmDate());
             }else{
                 mImage.setImageResource(R.drawable.achievement_icon_lock);
                 mBG.setBackgroundResource(R.drawable.design_achievement_bg_f);
                 mDescription.setText(mAchievement.getmHint());
                 mDate.setText("");
             }
+
+            mBG.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AchievementLab.get(getActivity()).updateAchievement(mAchievement,true);
+                    mBG.setBackgroundResource(R.drawable.design_achievement_bg_t);
+                    mDescription.setText(mAchievement.getmDescription());
+                    mDate.setText(mAchievement.getmDate());
+                }
+            });
+            mBG.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    AchievementLab.get(getActivity()).updateAchievement(mAchievement,false);
+                    mBG.setBackgroundResource(R.drawable.design_achievement_bg_f);
+                    mDescription.setText(mAchievement.getmHint());
+                    mDate.setText("");
+                    return true;
+                }
+            });
         }
     }
 

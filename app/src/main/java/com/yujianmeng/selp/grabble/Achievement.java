@@ -9,11 +9,10 @@ import java.util.UUID;
 public class Achievement {
 
     private UUID mID;
-    private int mImage;
     private String mName;
     private String mHint;
     private String mDescription;
-    private Date mDate;
+    private String mDate;
 
     public Achievement(){
         this(UUID.randomUUID());
@@ -25,11 +24,9 @@ public class Achievement {
 
     //Special Getters
     public int getImageString(){
-        switch (mImage){
-            case 0:return R.drawable.achievement_icon_sample1;
-            case 1:return R.drawable.achievement_icon_sample2;
-            case 2:return R.drawable.achievement_icon_lock;
-            default: return 0;
+        switch (mName){
+            //TODO achievement Image
+            default: return R.drawable.achievement_icon_lock;
         }
     }
 
@@ -39,12 +36,6 @@ public class Achievement {
     }
     public void setmID(UUID mID) {
         this.mID = mID;
-    }
-    public int getmImage() {
-        return mImage;
-    }
-    public void setmImage(int mImage) {
-        this.mImage = mImage;
     }
     public String getmName() {
         return mName;
@@ -64,10 +55,10 @@ public class Achievement {
     public void setmDescription(String mDescription) {
         this.mDescription = mDescription;
     }
-    public Date getmDate() {
+    public String getmDate() {
         return mDate;
     }
-    public void setmDate(Date mDate) {
+    public void setmDate(String mDate) {
         this.mDate = mDate;
     }
 }
