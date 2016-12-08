@@ -105,6 +105,7 @@ public class FragmentAchievement extends Fragment {
                     mBG.setBackgroundResource(R.drawable.design_achievement_bg_t);
                     mDescription.setText(mAchievement.getmDescription());
                     mDate.setText(mAchievement.getmDate());
+                    mImage.setImageResource(mAchievement.getImageString());
                 }
             });
             mBG.setOnLongClickListener(new View.OnLongClickListener() {
@@ -114,6 +115,7 @@ public class FragmentAchievement extends Fragment {
                     mBG.setBackgroundResource(R.drawable.design_achievement_bg_f);
                     mDescription.setText(mAchievement.getmHint());
                     mDate.setText("");
+                    mImage.setImageResource(R.drawable.achievement_icon_lock);
                     return true;
                 }
             });
