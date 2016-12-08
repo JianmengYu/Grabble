@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -301,6 +302,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if(isInRange(mMyLocation2,marker.getPosition(),0.0003)){
+                    Log.i("TAG",marker.getSnippet());
+                    MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
                     marker.remove();
                     markers.remove(marker);
                     Toast.makeText(getApplicationContext(),
@@ -325,6 +328,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                                 //Adjust Click Range Here
                         Toast.makeText(MapActivity.this, "Letter " + m.getTitle() + " collected using grabber!",
                                 Toast.LENGTH_SHORT).show();
+                        Log.i("TAG",marker.getSnippet());
+                        MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
                         m.remove();
                         markers.remove(m);
                         moved = false;//------------TEST
@@ -442,32 +447,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     private void readKml(){
-        //http://stackoverflow.com/questions/1140144/read-and-parse-kml-in-java
-        try {
-            InputStream json = getApplicationContext().getAssets().open("sunday.kml");
-            BufferedReader in = new BufferedReader(new InputStreamReader(json));
-            String str;
-            Character name = null;
-            LatLng latLng;
-            while ((str = in.readLine()) != null){
-                if (str.contains("<description>")){
-                    str = str.replace("<description>", "").replace("</description>", "").replace(" ","");
-                    name = str.charAt(0);
-                }
-                if (str.contains("<coordinates>")){
-                    str = str.replace("<coordinates>", "").replace("</coordinates>", "").replace(" ","");
-                    String[] coord = str.split(",");
-                    latLng = new LatLng(Double.valueOf(coord[1]),Double.valueOf(coord[0]));
-                    //TODO change add marker to add in database
-                    marker = mMap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .title(name.toString())
-                            .icon(BitmapDescriptorFactory.fromResource(getImageString(name))));
-                    markers.add(marker);
-                }
+        MarkerLab markerLab = MarkerLab.get(getApplicationContext());
+        List<MyMarker> markerList = markerLab.getMarkers();
+        for (MyMarker m : markerList){
+            if (!m.ismCollected()){
+                marker = mMap.addMarker(new MarkerOptions()
+                        .position(m.getLatLng())
+                        .title(m.getmName() + "")
+                        .snippet(m.getmDescription())
+                        .icon(BitmapDescriptorFactory.fromResource(getImageString(m.getmName()))));
+                markers.add(marker);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

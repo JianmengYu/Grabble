@@ -13,6 +13,7 @@ public class Achievement {
     private String mHint;
     private String mDescription;
     private String mDate;
+    //Store date as string of unlocked date, for easy use..
 
     public Achievement(){
         this(UUID.randomUUID());

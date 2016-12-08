@@ -5,8 +5,6 @@ import android.database.CursorWrapper;
 
 import com.yujianmeng.selp.grabble.AchievementDbSchema.AchievementTable;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.UUID;
 
 /**

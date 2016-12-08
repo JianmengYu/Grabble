@@ -9,10 +9,10 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import com.yujianmeng.selp.grabble.AchievementDbSchema.AchievementTable;
@@ -107,7 +107,9 @@ public class AchievementLab {
         boolean completed = !achievement.getmDate().equals("No Unlocked Yet");
         if (unlock){
             if (!completed) {
-                achievement.setmDate(new Date().toString());
+                Date date = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss,yyyy-MM-dd");
+                achievement.setmDate("Unlocked at: " + dateFormat.format(date));
             }
         }else{
             achievement.setmDate("No Unlocked Yet");
@@ -141,7 +143,18 @@ public class AchievementLab {
     }
 
     private void addAchievement(Achievement a){
-        ContentValues values = getContentValues(a);
-        mDatabase.insert(AchievementTable.NAME,null,values);
+        //If achievement is in database, don't add it.
+        //Move this to a more efficient place, if possiburu
+        String acName = a.getmName();
+        AchievementCursorWrapper cursor = queryAchievements(
+                AchievementTable.Cols.NAMES + " = ?",
+                new String[] {acName}
+        );
+        if (cursor.getCount() == 0) {
+            ContentValues values = getContentValues(a);
+            mDatabase.insert(AchievementTable.NAME,null,values);
+            //Log.i("error!","NEW ACHIEVEMENT ADDED!");
+        }
+        cursor.close();
     }
 }
