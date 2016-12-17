@@ -12,7 +12,6 @@ public class Grabble {
     private char[] input = new char[7];
     private int inputpoint = 0;
     private int[] letters = new int[26];
-    private String alphabet = "abcdefghijklmnopqrstuvwxyz";
     private HashMap<Character,Integer> scoreSG = new HashMap<Character, Integer>() {{
         put('a',3 );put('b',20);put('c',13);put('d',10);put('e',1 );
         put('f',15);put('g',18);put('h',9 );put('i',5 );put('j',25);
@@ -25,9 +24,9 @@ public class Grabble {
     //TODO read from asset
     private ArrayList<String> dictionary = new ArrayList<>(Arrays.asList("harambe","drzaius"));
 
-    public Grabble(){
-        //TODO Initialize letter storage;
-        Arrays.fill(letters,2);
+    public Grabble(int[] letters){
+        this.letters = letters;
+        //Arrays.fill(letters,2);
     }
 
     public char[] getInput(){
@@ -45,6 +44,8 @@ public class Grabble {
     public int getAmount(char c){
         return letters[charToInt(c)];
     }
+
+    public int[] getAll() {return letters;}
 
     public int getScore(){
         int score = 0;
@@ -69,7 +70,7 @@ public class Grabble {
         //Return FALSE if the letter is successfully entered
         int i = charToInt(a);
         if (inputpoint < 7 && letters[i] > 0) {
-            input[inputpoint] = alphabet.charAt(i);
+            input[inputpoint] = intToChar(i);
             inputpoint++;
             letters[i]--;
             return false;
@@ -90,7 +91,13 @@ public class Grabble {
         }
     }
 
-    public int charToInt(char c){
+    public static char intToChar(int i){
+        String alphabet = "abcdefghijklmnopqrstuvwxyz";
+        return alphabet.charAt(i);
+    }
+
+    public static int charToInt(char c){
+        String alphabet = "abcdefghijklmnopqrstuvwxyz";
         char[] out = alphabet.toCharArray();
         for (int i = 0; i < 26; i++){
             if (c == out[i]){

@@ -3,9 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <!--My color-->
+    <!--General White Black Grey-->
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorBGblack">#D9000000</color>
     <!--Design colors-->
     <color name="colorBGbrown">#ece4d3</color>
     <color name="colorBGgreen">#cbe6a3</color>

@@ -1,5 +1,6 @@
 package com.yujianmeng.selp.grabble;
 
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,11 +18,15 @@ import android.widget.Toast;
 
 public class FragmentScrabble extends Fragment{
 
+    private static final String PREF_SAVE = "MySaveFile";
+
     private TextView mLevel;
     private TextView mExp;
     private TextView mScore;
     private TextView mDiscard;
     private ImageView mComplete;
+    private ImageView mHelp;
+    private RelativeLayout mHelpLayout;
 
     private TextView mWarning1;
     private TextView mWarning2;
@@ -61,11 +66,13 @@ public class FragmentScrabble extends Fragment{
     private ImageView mButtonY;
     private ImageView mButtonZ;
 
-    private Grabble grabble = new Grabble();
+    private Grabble grabble;
+    private int mEagle;
+    private int mGrabber;
 
     private int exp = 3400;
     private int level = 20;
-    private int score = grabble.getPoint();
+    private int score;
 
     private Typeface mFont;
 
@@ -76,6 +83,14 @@ public class FragmentScrabble extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scrabble, container, false);
+
+        SharedPreferences save = getActivity().getSharedPreferences(PREF_SAVE, 0);
+        int[] letters = new int[26];
+        for (int i = 0 ; i < 26 ; i++) {letters[i] = save.getInt("letter" + i,0);}
+        grabble = new Grabble(letters);
+        mEagle = save.getInt("eagle",0);
+        mGrabber = save.getInt("grabber",0);
+        score = grabble.getScore();
 
         mFont = Typeface.createFromAsset(getActivity().getAssets(), "generica_bold.otf");
 
@@ -92,6 +107,8 @@ public class FragmentScrabble extends Fragment{
         mWarning2 = (TextView) view.findViewById(R.id.scrabble_warning2);
         mWarning2.setTypeface(mFont);
         mComplete = (ImageView) view.findViewById(R.id.scrabble_complete_button);
+        mHelp = (ImageView) view.findViewById(R.id.scrabble_help_button);
+        mHelpLayout = (RelativeLayout) view.findViewById(R.id.scrabble_layout_help);
 
         mInput1 = (ImageView) view.findViewById(R.id.scrabble_input_1);
         mInput1.setImageResource(R.drawable.scrabble_button);
@@ -177,6 +194,21 @@ public class FragmentScrabble extends Fragment{
                         grabble.discardLetter();
                         updateUI();
                         break;
+                    case R.id.scrabble_help_button:
+                        if (mHelpLayout.getVisibility() == View.INVISIBLE){
+                            mHelpLayout.setVisibility(View.VISIBLE);
+                            mWarning1.setVisibility(View.INVISIBLE);
+                            mWarning2.setVisibility(View.INVISIBLE);
+                        }else{
+                            mHelpLayout.setVisibility(View.INVISIBLE);
+                            mWarning1.setVisibility(View.VISIBLE);
+                            mWarning2.setVisibility(View.VISIBLE);
+                        }break;
+                    case R.id.scrabble_layout_help:
+                        mHelpLayout.setVisibility(View.INVISIBLE);
+                        mWarning1.setVisibility(View.VISIBLE);
+                        mWarning2.setVisibility(View.VISIBLE);
+                        break;
                 }
             }
         };
@@ -209,6 +241,8 @@ public class FragmentScrabble extends Fragment{
 
         mComplete.setOnClickListener(shortListener);
         mDiscard.setOnClickListener(shortListener);
+        mHelp.setOnClickListener(shortListener);
+        mHelpLayout.setOnClickListener(shortListener);
 
         //Set the detail function of the long clicks.
         View.OnLongClickListener longListener = new View.OnLongClickListener() {
@@ -290,6 +324,18 @@ public class FragmentScrabble extends Fragment{
 
         updateUI();
         return view;
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        SharedPreferences save = getActivity().getSharedPreferences(PREF_SAVE, 0);
+        SharedPreferences.Editor editor = save.edit();
+        int[] letters = grabble.getAll();
+        for (int i = 0 ; i < 26 ; i++) {editor.putInt("letter" + i,letters[i]);}
+        editor.putInt("eagle",mEagle);
+        editor.putInt("grabber",mGrabber);
+        editor.commit();
     }
 
     public void addScore(int score){

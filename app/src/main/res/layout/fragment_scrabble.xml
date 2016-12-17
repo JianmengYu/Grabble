@@ -119,40 +119,6 @@
 
     </RelativeLayout>
 
-    <!--Layout of score and discard button-->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:layout_below="@+id/scrabble_layout_input"
-        android:id="@+id/scrabble_layout_scorediscard">
-
-        <TextView
-            android:layout_width="140dp"
-            android:layout_height="25dp"
-            android:background="@drawable/scrabble_button_text"
-            android:textColor="@color/colorFontBrown"
-            android:textSize="18dp"
-            android:gravity="center"
-            android:layout_alignParentLeft="true"
-
-            android:id="@+id/scrabble_score_button"
-            android:text="Total Score: 00"/>
-
-        <TextView
-            android:layout_width="85dp"
-            android:layout_height="25dp"
-            android:background="@drawable/scrabble_button_text"
-            android:textColor="@color/colorFontBrown"
-            android:textSize="18dp"
-            android:gravity="center"
-            android:layout_alignParentRight="true"
-
-            android:id="@+id/scrabble_discard_button"
-            android:text="DISCARD"/>
-
-    </RelativeLayout>
-
     <!--Layout of Keyboard-->
     <RelativeLayout
         android:layout_width="match_parent"
@@ -391,7 +357,72 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <!---->
+    <!--Layout of help-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBGblack"
+        android:id="@+id/scrabble_layout_help"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/design_scrabble_help1"
+            android:layout_alignParentTop="true"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:src="@drawable/design_scrabble_help2"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <!--Help Button-->
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/button_help"
+        android:id="@+id/scrabble_help_button"
+        android:layout_above="@id/scrabble_layout_keyboard"
+        android:layout_alignParentRight="true"/>
+
+    <!--Layout of score and discard button-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_below="@+id/scrabble_layout_input"
+        android:id="@+id/scrabble_layout_scorediscard">
+
+        <TextView
+            android:layout_width="140dp"
+            android:layout_height="25dp"
+            android:background="@drawable/scrabble_button_text"
+            android:textColor="@color/colorFontBrown"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:layout_alignParentLeft="true"
+
+            android:id="@+id/scrabble_score_button"
+            android:text="Total Score: 00"/>
+
+        <TextView
+            android:layout_width="85dp"
+            android:layout_height="25dp"
+            android:background="@drawable/scrabble_button_text"
+            android:textColor="@color/colorFontBrown"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+
+            android:id="@+id/scrabble_discard_button"
+            android:text="DISCARD"/>
+
+    </RelativeLayout>
+
+    <!--Layout of Complete Button and Warning-->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

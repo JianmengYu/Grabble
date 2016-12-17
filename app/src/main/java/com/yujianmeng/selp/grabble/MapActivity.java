@@ -2,6 +2,7 @@ package com.yujianmeng.selp.grabble;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Handler;
@@ -42,6 +43,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String PREF_SAVE = "MySaveFile";
+
     private GoogleMap mMap;
     private Button mButtonLeftTurn;
     private Button mButtonRightTurn;
@@ -62,6 +65,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     private LatLng mMyLocation;//For camera
     private LatLng mMyLocation2;//Actual location
+    private int[] mLetters = new int[26];
+    private int mEagle;
+    private int mGrabber;
     private float mMyBearing;
     private boolean zooming = false;//for test
 
@@ -73,6 +79,26 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
+        for (int i = 0 ; i < 26 ; i++) {mLetters[i] = save.getInt("letter" + i,3);}//Change the initial letter amount here.
+        mEagle = save.getInt("eagle",0);
+        mGrabber = save.getInt("grabber",0);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
+        SharedPreferences.Editor editor = save.edit();
+        for (int i = 0 ; i < 26 ; i++) {editor.putInt("letter" + i,mLetters[i]);}
+        editor.putInt("eagle",mEagle);
+        editor.putInt("grabber",mGrabber);
+        editor.commit();
     }
 
     @Override
@@ -302,6 +328,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if(isInRange(mMyLocation2,marker.getPosition(),0.0003)){
+                    mLetters[Grabble.charToInt(Character.toLowerCase(marker.getTitle().charAt(0)))]++;
                     Log.i("TAG",marker.getSnippet());
                     MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
                     marker.remove();
@@ -326,6 +353,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     if(Math.abs(m.getPosition().latitude  - latLng.latitude)  < 0.00005 &&
                        Math.abs(m.getPosition().longitude - latLng.longitude) < 0.00005) {
                                                 //Adjust Click Range Here
+                        mLetters[Grabble.charToInt(Character.toLowerCase(m.getTitle().charAt(0)))]++;
                         Toast.makeText(MapActivity.this, "Letter " + m.getTitle() + " collected using grabber!",
                                 Toast.LENGTH_SHORT).show();
                         Log.i("TAG",marker.getSnippet());
