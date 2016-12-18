@@ -20,7 +20,11 @@ import com.yujianmeng.selp.grabble.AchievementDbSchema.AchievementTable;
  * Created by YuJianmeng on 2016/12/3.
  */
 
-//TODO yet another copyright stuff
+/** DISCLAIMER: the following code are adapted from
+ * <<Android Programming: The Big Nerd Ranch Guide>> 2nd Edition
+ * by Bill Phillips, Chris Stewart, Brian Hardy and Kristin Marsicano
+ * copyright 2015 Big Nerd Ranch, LLC.
+ */
 public class AchievementLab {
 
     private static AchievementLab sAchievementLab;
@@ -52,22 +56,7 @@ public class AchievementLab {
             }
             inputStream.close();
         } catch (Exception e) {
-            //TODO change exception
-            throw new RuntimeException("You got" + e + ", seriously?");
         }
-        //TODO remove random achievement generator and implement database
-        /*
-        mAchievements = new ArrayList<>();
-        for (int i=0;i<100;i++){
-            Achievement sb = new Achievement();
-            sb.setmImage(i % 3);
-            if(i%2 == 0){sb.setmDate(new Date());}
-            sb.setmName("Name Here");
-            sb.setmHint("Hint: One of your ancestor is fat, not your da");
-            sb.setmDescription("OyeaUgotIt! Wubba Lubba Dub Dub!Long!");
-            mAchievements.add(sb);
-        }
-        */
     }
 
     public List<Achievement> getAchievements(){
@@ -144,7 +133,8 @@ public class AchievementLab {
 
     private void addAchievement(Achievement a){
         //If achievement is in database, don't add it.
-        //Move this to a more efficient place, if possiburu
+        //Move this to a more efficient place, if possible;
+        //Since there wasn't many achievements..
         String acName = a.getmName();
         AchievementCursorWrapper cursor = queryAchievements(
                 AchievementTable.Cols.NAMES + " = ?",

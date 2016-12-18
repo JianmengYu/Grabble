@@ -219,10 +219,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 return true;
             }
         });
-        //TODO add long click to check item number
         mButtonEagle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mEagle != 0){
+                    mEagle--;
                 CameraPosition temp = mMap.getCameraPosition();
                 zooming = true;
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
@@ -249,7 +250,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                     }
                                 });
                     }
-                }, 5000);
+                }, 5000);}else{
+                    Toast.makeText(MapActivity.this, "You have no Eagle Eye left!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        mButtonEagle.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(mEagle == 0){
+                    Toast.makeText(MapActivity.this, "You have no Eagle Eye left!",
+                            Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(MapActivity.this, "You have " + mEagle + " Eagle Eye left!",
+                            Toast.LENGTH_SHORT).show();
+                }
+                return true;
             }
         });
         mButtonGrabble.setOnClickListener(new View.OnClickListener() {
@@ -323,7 +340,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         });
 
         //Override marker click event
-        //TODO complete implement of marker click event
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -338,7 +354,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                         Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(getApplicationContext(),
-                            "Too Far!",
+                            "Too Far! \nYou have " + mGrabber + " Grabber left.",
                             Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -348,21 +364,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onMapLongClick(LatLng latLng) {
                 boolean moved = true;//----------------------TEST
+                if (mGrabber != 0){
+                    mGrabber--;
                 for(Marker m : markers){
-                    //TODO adjust item use case
                     if(Math.abs(m.getPosition().latitude  - latLng.latitude)  < 0.00005 &&
                        Math.abs(m.getPosition().longitude - latLng.longitude) < 0.00005) {
                                                 //Adjust Click Range Here
                         mLetters[Grabble.charToInt(Character.toLowerCase(m.getTitle().charAt(0)))]++;
                         Toast.makeText(MapActivity.this, "Letter " + m.getTitle() + " collected using grabber!",
                                 Toast.LENGTH_SHORT).show();
-                        Log.i("TAG",marker.getSnippet());
                         MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
                         m.remove();
                         markers.remove(m);
                         moved = false;//------------TEST
                         break;
                     }
+                }
+                }else{
+                    Toast.makeText(MapActivity.this, "You don't have any Grabber Left!",
+                            Toast.LENGTH_SHORT).show();
                 }
                 //TODO remove following move code.
                 if (moved && !zooming){

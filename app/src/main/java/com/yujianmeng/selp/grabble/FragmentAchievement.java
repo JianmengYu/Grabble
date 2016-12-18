@@ -16,7 +16,12 @@ import android.widget.TextView;
 import java.util.Date;
 import java.util.List;
 
-//TODO add copyright stuff
+/** DISCLAIMER: the following code are adapted from
+ * <<Android Programming: The Big Nerd Ranch Guide>> 2nd Edition
+ * by Bill Phillips, Chris Stewart, Brian Hardy and Kristin Marsicano
+ * copyright 2015 Big Nerd Ranch, LLC.
+ * (The criminalIntent part)
+ */
 public class FragmentAchievement extends Fragment {
 
     private RecyclerView mAchievementRecyclerView;

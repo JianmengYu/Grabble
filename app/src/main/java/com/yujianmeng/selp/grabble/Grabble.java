@@ -33,14 +33,6 @@ public class Grabble {
         return input;
     }
 
-    public boolean isWord(){
-        String outcome = String.valueOf(input);
-        if (inputpoint == 7){
-            return dictionary.contains(outcome);
-        }
-        return false;
-    }
-
     public int getAmount(char c){
         return letters[charToInt(c)];
     }
@@ -58,24 +50,24 @@ public class Grabble {
     }
 
     public int completeWord(){
-        if(isWord()){
             int score = getScore();
             inputpoint = 0;
             return score;
-        }
-        return 0;
     }
 
-    public boolean enterLetter(char a){
-        //Return FALSE if the letter is successfully entered
+    public int enterLetter(char a){
+        //Return 0 if successfully entered
+        //Return 1 if not because of out of letters
+        //Return 2 if not because of no more spaces
         int i = charToInt(a);
         if (inputpoint < 7 && letters[i] > 0) {
             input[inputpoint] = intToChar(i);
             inputpoint++;
             letters[i]--;
-            return false;
+            return 0;
         }
-        return true;
+        if (inputpoint == 7){return 2;}
+        return 1;
     }
 
     public void discardLetter(){

@@ -4,40 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/colorBGbrown">
 
-    <!--Layout of Level and exp button-->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:id="@+id/scrabble_layout_levelexp"
-        android:layout_alignParentTop="true">
-
-        <TextView
-            android:layout_width="90dp"
-            android:layout_height="25dp"
-            android:background="@drawable/scrabble_button_text"
-            android:textColor="@color/colorFontBrown"
-            android:textSize="18dp"
-            android:gravity="center"
-            android:layout_alignParentLeft="true"
-
-            android:id="@+id/scrabble_level_button"
-            android:text="Level: 20"/>
-
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="25dp"
-            android:background="@drawable/scrabble_button_text"
-            android:textColor="@color/colorFontBrown"
-            android:textSize="18dp"
-            android:gravity="center"
-            android:layout_alignParentRight="true"
-
-            android:id="@+id/scrabble_exp_button"
-            android:text="Exp: 3400"/>
-
-    </RelativeLayout>
-
     <!--Layout of input area-->
     <RelativeLayout
         android:layout_width="match_parent"
@@ -379,14 +345,39 @@
 
     </RelativeLayout>
 
-    <!--Help Button-->
-    <ImageView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:src="@drawable/button_help"
-        android:id="@+id/scrabble_help_button"
-        android:layout_above="@id/scrabble_layout_keyboard"
-        android:layout_alignParentRight="true"/>
+    <!--Layout of Level and exp button-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:id="@+id/scrabble_layout_levelexp"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="25dp"
+            android:background="@drawable/scrabble_button_text"
+            android:textColor="@color/colorFontBrown"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:layout_alignParentLeft="true"
+
+            android:id="@+id/scrabble_level_button"
+            android:text="Level: 20"/>
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="25dp"
+            android:background="@drawable/scrabble_button_text"
+            android:textColor="@color/colorFontBrown"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+
+            android:id="@+id/scrabble_exp_button"
+            android:text="Exp: 3400"/>
+
+    </RelativeLayout>
 
     <!--Layout of score and discard button-->
     <RelativeLayout
@@ -453,6 +444,15 @@
             android:textColor="@color/colorFontBrown"
             android:id="@+id/scrabble_warning2"/>
     </LinearLayout>
+
+    <!--Help Button-->
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/button_help"
+        android:id="@+id/scrabble_help_button"
+        android:layout_above="@id/scrabble_layout_keyboard"
+        android:layout_alignParentRight="true"/>
 
     <!--A padding-->
     <RelativeLayout

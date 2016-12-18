@@ -21,7 +21,12 @@ import java.util.UUID;
 /**
  * Created by YuJianmeng on 2016/12/8.
  */
-//TODO copyright blahblahblah
+
+/** DISCLAIMER: the following code are adapted from
+ * <<Android Programming: The Big Nerd Ranch Guide>> 2nd Edition
+ * by Bill Phillips, Chris Stewart, Brian Hardy and Kristin Marsicano
+ * copyright 2015 Big Nerd Ranch, LLC.
+ */
 public class MarkerLab {
 
     private static MarkerLab sMarkerLab;
@@ -49,7 +54,6 @@ public class MarkerLab {
                 String str;
                 Character name = null;
                 String description = null;
-                LatLng latLng;
                 while ((str = in.readLine()) != null) {
                     if (str.contains("<description>")) {
                         str = str.replace("<description>", "").replace("</description>", "").replace(" ", "");
@@ -61,13 +65,14 @@ public class MarkerLab {
                     if (str.contains("<coordinates>")) {
                         str = str.replace("<coordinates>", "").replace("</coordinates>", "").replace(" ", "");
                         String[] coord = str.split(",");
-                        latLng = new LatLng(Double.valueOf(coord[1]), Double.valueOf(coord[0]));
-                        MyMarker marker = new MyMarker();
-                        marker.setmName(name);
-                        marker.setmDescription(description);
-                        marker.setLatLng(latLng);
-                        marker.setmCollected(false);
-                        addMarker(marker);
+                        ContentValues values = new ContentValues();
+                        values.put(MarkerTable.Cols.UUID, UUID.randomUUID().toString());
+                        values.put(MarkerTable.Cols.NAMES, name.toString());
+                        values.put(MarkerTable.Cols.DESCRIPTION, description);
+                        values.put(MarkerTable.Cols.LAT, Double.valueOf(coord[1]));
+                        values.put(MarkerTable.Cols.LNG, Double.valueOf(coord[0]));
+                        values.put(MarkerTable.Cols.COLLECTED,false);
+                        addMarker(values);
                     }
                 }
             } catch (Exception e) {
@@ -150,12 +155,9 @@ public class MarkerLab {
         return  new MarkerCursorWrapper(cursor);
     }
 
-    private void addMarker(MyMarker m){
+    private void addMarker(ContentValues values){
         //If marker is in database, don't add it.
         //Move this to a more efficient place, if possible
-        String description = m.getmDescription();
-            ContentValues values = getContentValues(m);
             mDatabase.insert(MarkerTable.NAME,null,values);
-            Log.i("error!","NEW MARKER ADDED!");
     }
 }

@@ -26,7 +26,7 @@ public class Achievement {
     //Special Getters
     public int getImageString(){
         switch (mName){
-            //TODO achievement Image
+            //TODO achievement Image and achievement to an amount of about 50
             case "A New Player in Town":return R.drawable.achievement_100;
             case "Grabbled": return R.drawable.achievement_1000;
             case "It's OVER 9000!": return R.drawable.achievement_9000;

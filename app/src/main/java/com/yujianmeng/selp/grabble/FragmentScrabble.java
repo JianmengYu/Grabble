@@ -1,9 +1,12 @@
 package com.yujianmeng.selp.grabble;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,9 +73,14 @@ public class FragmentScrabble extends Fragment{
     private int mEagle;
     private int mGrabber;
 
-    private int exp = 3400;
-    private int level = 20;
-    private int score;
+    private int exp = 0;
+    private int level = 0;
+    private int score = 0;
+    private int[] levelup = {200,400,600,900,1200,1500,1900,2300,2700,3200,4200,4800,5400,6000,6700,7400,
+                                8100,8900,9700,10500,11400,12300,13200,14200,15200,16200,17300,18400,19500,
+                                20700,21900,23100,24400,25700,27000,28400,29800,31200,32700,34200,35700,
+                                37300,38900,40500,42200,43900,45600,47400,49200,51000};
+    //private DictionaryLab dictionary;
 
     private Typeface mFont;
 
@@ -84,12 +92,15 @@ public class FragmentScrabble extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scrabble, container, false);
 
+        //dictionary = DictionaryLab.get(getActivity().getApplicationContext());
         SharedPreferences save = getActivity().getSharedPreferences(PREF_SAVE, 0);
         int[] letters = new int[26];
         for (int i = 0 ; i < 26 ; i++) {letters[i] = save.getInt("letter" + i,0);}
         grabble = new Grabble(letters);
         mEagle = save.getInt("eagle",0);
         mGrabber = save.getInt("grabber",0);
+        exp = save.getInt("exp",0);
+        level = save.getInt("level",0);
         score = grabble.getScore();
 
         mFont = Typeface.createFromAsset(getActivity().getAssets(), "generica_bold.otf");
@@ -158,36 +169,39 @@ public class FragmentScrabble extends Fragment{
             public void onClick(View v) {
                 switch (v.getId()) {
                     //Prompt the player if the letter is not Entered
-                    //TODO remake the enter letter system.
-                    case R.id.scrabble_input_a: if(grabble.enterLetter('a')){constructString('a',2);}; updateUI(); break;
-                    case R.id.scrabble_input_b: if(grabble.enterLetter('b')){constructString('b',2);}; updateUI(); break;
-                    case R.id.scrabble_input_c: if(grabble.enterLetter('c')){constructString('c',2);}; updateUI(); break;
-                    case R.id.scrabble_input_d: if(grabble.enterLetter('d')){constructString('d',2);}; updateUI(); break;
-                    case R.id.scrabble_input_e: if(grabble.enterLetter('e')){constructString('e',2);}; updateUI(); break;
-                    case R.id.scrabble_input_f: if(grabble.enterLetter('f')){constructString('f',2);}; updateUI(); break;
-                    case R.id.scrabble_input_g: if(grabble.enterLetter('g')){constructString('g',2);}; updateUI(); break;
-                    case R.id.scrabble_input_h: if(grabble.enterLetter('h')){constructString('h',2);}; updateUI(); break;
-                    case R.id.scrabble_input_i: if(grabble.enterLetter('i')){constructString('i',2);}; updateUI(); break;
-                    case R.id.scrabble_input_j: if(grabble.enterLetter('j')){constructString('j',2);}; updateUI(); break;
-                    case R.id.scrabble_input_k: if(grabble.enterLetter('k')){constructString('k',2);}; updateUI(); break;
-                    case R.id.scrabble_input_l: if(grabble.enterLetter('l')){constructString('l',2);}; updateUI(); break;
-                    case R.id.scrabble_input_m: if(grabble.enterLetter('m')){constructString('m',2);}; updateUI(); break;
-                    case R.id.scrabble_input_n: if(grabble.enterLetter('n')){constructString('n',2);}; updateUI(); break;
-                    case R.id.scrabble_input_o: if(grabble.enterLetter('o')){constructString('o',2);}; updateUI(); break;
-                    case R.id.scrabble_input_p: if(grabble.enterLetter('p')){constructString('p',2);}; updateUI(); break;
-                    case R.id.scrabble_input_q: if(grabble.enterLetter('q')){constructString('q',2);}; updateUI(); break;
-                    case R.id.scrabble_input_r: if(grabble.enterLetter('r')){constructString('r',2);}; updateUI(); break;
-                    case R.id.scrabble_input_s: if(grabble.enterLetter('s')){constructString('s',2);}; updateUI(); break;
-                    case R.id.scrabble_input_t: if(grabble.enterLetter('t')){constructString('t',2);}; updateUI(); break;
-                    case R.id.scrabble_input_u: if(grabble.enterLetter('u')){constructString('u',2);}; updateUI(); break;
-                    case R.id.scrabble_input_v: if(grabble.enterLetter('v')){constructString('v',2);}; updateUI(); break;
-                    case R.id.scrabble_input_w: if(grabble.enterLetter('w')){constructString('w',2);}; updateUI(); break;
-                    case R.id.scrabble_input_x: if(grabble.enterLetter('x')){constructString('x',2);}; updateUI(); break;
-                    case R.id.scrabble_input_y: if(grabble.enterLetter('y')){constructString('y',2);}; updateUI(); break;
-                    case R.id.scrabble_input_z: if(grabble.enterLetter('z')){constructString('z',2);}; updateUI(); break;
+                    //The enterLetter is called inside constructString
+                    case R.id.scrabble_input_a: constructString('a',2); updateUI(); break;
+                    case R.id.scrabble_input_b: constructString('b',2); updateUI(); break;
+                    case R.id.scrabble_input_c: constructString('c',2); updateUI(); break;
+                    case R.id.scrabble_input_d: constructString('d',2); updateUI(); break;
+                    case R.id.scrabble_input_e: constructString('e',2); updateUI(); break;
+                    case R.id.scrabble_input_f: constructString('f',2); updateUI(); break;
+                    case R.id.scrabble_input_g: constructString('g',2); updateUI(); break;
+                    case R.id.scrabble_input_h: constructString('h',2); updateUI(); break;
+                    case R.id.scrabble_input_i: constructString('i',2); updateUI(); break;
+                    case R.id.scrabble_input_j: constructString('j',2); updateUI(); break;
+                    case R.id.scrabble_input_k: constructString('k',2); updateUI(); break;
+                    case R.id.scrabble_input_l: constructString('l',2); updateUI(); break;
+                    case R.id.scrabble_input_m: constructString('m',2); updateUI(); break;
+                    case R.id.scrabble_input_n: constructString('n',2); updateUI(); break;
+                    case R.id.scrabble_input_o: constructString('o',2); updateUI(); break;
+                    case R.id.scrabble_input_p: constructString('p',2); updateUI(); break;
+                    case R.id.scrabble_input_q: constructString('q',2); updateUI(); break;
+                    case R.id.scrabble_input_r: constructString('r',2); updateUI(); break;
+                    case R.id.scrabble_input_s: constructString('s',2); updateUI(); break;
+                    case R.id.scrabble_input_t: constructString('t',2); updateUI(); break;
+                    case R.id.scrabble_input_u: constructString('u',2); updateUI(); break;
+                    case R.id.scrabble_input_v: constructString('v',2); updateUI(); break;
+                    case R.id.scrabble_input_w: constructString('w',2); updateUI(); break;
+                    case R.id.scrabble_input_x: constructString('x',2); updateUI(); break;
+                    case R.id.scrabble_input_y: constructString('y',2); updateUI(); break;
+                    case R.id.scrabble_input_z: constructString('z',2); updateUI(); break;
 
                     case R.id.scrabble_complete_button:
-                        if (grabble.getPoint() == 7){
+                        //Log.i("TAG",dictionary.getDictionary().get(0));
+                        if (grabble.getPoint() == 7 //&&
+                                //dictionary.getDictionary().contains(String.valueOf(grabble.getInput()))
+                            ){
                             addScore(grabble.completeWord());
                         };break;
                     case R.id.scrabble_discard_button:
@@ -327,26 +341,70 @@ public class FragmentScrabble extends Fragment{
     }
 
     @Override
-    public void onDestroy(){
-        super.onDestroy();
+    public void onPause(){
+        grabble.discardAll();
         SharedPreferences save = getActivity().getSharedPreferences(PREF_SAVE, 0);
         SharedPreferences.Editor editor = save.edit();
         int[] letters = grabble.getAll();
         for (int i = 0 ; i < 26 ; i++) {editor.putInt("letter" + i,letters[i]);}
         editor.putInt("eagle",mEagle);
         editor.putInt("grabber",mGrabber);
+        editor.putInt("exp",exp);
+        editor.putInt("level",level);
+        //Commit save before closing
         editor.commit();
+        super.onPause();
     }
 
     public void addScore(int score){
+        //Calculate item reward.
+        int randomD201 = (int) ((Math.random() * 20) + 1);
+        int randomD202 = (int) ((Math.random() * 20) + 1);
+        int eagleGain = 0;
+        int grabberGain = 0;
+        if (score <= 40){
+            if (randomD201 > 19){eagleGain++;}
+            if (randomD202 > 19){grabberGain++;}}
+        if (score > 40 && score <= 80){
+            if (randomD201 > 10){eagleGain++;}
+            if (randomD202 > 10){grabberGain++;}}
+        if (score > 80 && score <= 100){
+            eagleGain++;grabberGain++;
+            if (randomD201 > 10){eagleGain++;}
+            if (randomD202 > 10){grabberGain++;}}
+        if (score > 100) {
+            eagleGain = eagleGain + 1 + randomD201/6;
+            grabberGain = grabberGain + 1 + randomD202/6;}
+        //Level Up
         int newScore = exp + score;
-        //TODO add level details
-        if (newScore/170>level){
-            level = newScore/170;
-            Toast.makeText(getActivity().getApplicationContext(),
-                    "Leveru Apuda!",
-                    Toast.LENGTH_SHORT).show();
+        int newLevel = level;
+        if (newLevel < levelup.length && newScore>=levelup[newLevel]){//If not max level
+            newLevel++;
+            eagleGain = eagleGain + newLevel/10 + 1;
+            grabberGain = grabberGain + newLevel/10 +1;
         }
+        mGrabber = mGrabber + grabberGain;
+        mEagle = mEagle + eagleGain;
+        //Construct reward string
+        String point = "You completed a score " + score + " word";
+        String lvUp = "";
+        String grUp = "";
+        String eaUp = "";
+        if (newLevel != level){lvUp = "\nLevel UP!";}
+        if (grabberGain > 0){grUp = "\nYou gained " + grabberGain + "x\"Grabber\"";}
+        if (eagleGain > 0){eaUp = "\nYou gained " + eagleGain + "x\"Eagle Eye\"";}
+        Toast t = new Toast(getActivity().getApplicationContext());
+        t.setGravity(Gravity.CENTER,0,-80);
+        //http://stackoverflow.com/questions/6888664/android-toast-doesnt-fit-text
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View tl = inflater.inflate(R.layout.toast_reward,null);
+        TextView textView = (TextView) tl.findViewById(R.id.text);
+        textView.setText(point + lvUp + grUp +eaUp);
+        textView.setTypeface(mFont);
+        t.setView(tl);
+        t.show();
+        //TODO complete reward prompt;
+        level = newLevel;
         exp = newScore;
         updateUI();
     }
@@ -377,21 +435,26 @@ public class FragmentScrabble extends Fragment{
 
     public void constructString(char c, int type){
         //Construct different hints, case 1 is check amount of letter left,
-        //                           case 2 tells player there are no letter left;
+        //                           case 2 warns player the letter is not inputted;
         int amount = grabble.getAmount(c);
+        int type2 = -1;
+        if (type == 2){type2 = grabble.enterLetter(c);}
         switch (type){
-            case 1: if (amount == 0){
-                        mWarning2.setText("You have " + "no" +
-                        " letter " + Character.toUpperCase(c) +
-                        " Left.");
-                    }else{
-                        mWarning2.setText("You have " + grabble.getAmount(c) +
-                        " letter " + Character.toUpperCase(c) +
-                        " Left.");
-                    }break;
-            case 2: mWarning2.setText("You don't have any letter " +
-                                        Character.toUpperCase(c) +
-                                        " Left!");break;
+            case 1: if (amount == 0){mWarning2.setText("You have " + "no" +
+                                                          " letter " + Character.toUpperCase(c) +
+                                                          " Left.");
+                    }else{mWarning2.setText("You have " + grabble.getAmount(c) +
+                                              " letter " + Character.toUpperCase(c) +
+                                              " Left.");}
+                    break;
+            case 2: if (type2 == 0) {mWarning2.setText("You have " + grabble.getAmount(c) +
+                                                        " letter " + Character.toUpperCase(c) +
+                                                        " Left.");}
+                     if (type2 == 1) {mWarning2.setText("You don't have letter " +
+                                                          Character.toUpperCase(c) +
+                                                          " Left!");}
+                     if (type2 == 2) {mWarning2.setText("You already used 7 letters!");}
+                     break;
         }
 
     }

@@ -45,9 +45,6 @@
             android:name=".ActivityScrabble"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ActivityAchievement"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ActivityPager"
             android:screenOrientation="portrait"
         />
