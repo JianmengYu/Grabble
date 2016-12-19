@@ -32,8 +32,15 @@ public class Achievement {
             case "It's OVER 9000!": return R.drawable.achievement_9000;
             case "Obsessed": return R.drawable.achievement_50000;
             case "Maniac!": return R.drawable.achievement_100000;
+            case "Walker": return R.drawable.achievement_1km;
+            case "Runner" : return R.drawable.achievement_10km;
+            case "Marathon Runner" : return R.drawable.achievement_42km;
+            case "Flash": return R.drawable.achievement_100km;
+            case "Traveler" : return R.drawable.achievement_500km;
             case "Toddler": return R.drawable.achievement_toddler;
             case "Bachelor": return R.drawable.achievement_bachelor;
+            case "Clueless" : return R.drawable.achievement_clueless;
+            case "Still Clueless" : return R.drawable.achievement_grabble;
             case "Madness?": return R.drawable.achievement_spartan;
             case "Realm of Freedom": return R.drawable.achievement_america;
             case "Monkey Lover": return R.drawable.achievement_monkey1;

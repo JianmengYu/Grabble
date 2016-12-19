@@ -3,6 +3,7 @@
 
     <!--Temporarily used Strings-->
     <string name="temp_button_clicked">button clicked!</string>
+    <string name="empty_string"></string>
 
     <!--Main Page Strings-->
     <string name="main_title">GRABBLE</string>

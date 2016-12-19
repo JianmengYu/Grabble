@@ -23,9 +23,6 @@ public class Grabble {
         put('z',26);
     }};
 
-    //TODO read from asset
-    private ArrayList<String> dictionary = new ArrayList<>(Arrays.asList("harambe","drzaius"));
-
     public Grabble(int[] letters){
         this.letters = letters;
         //Arrays.fill(letters,2);
@@ -40,6 +37,10 @@ public class Grabble {
     }
 
     public int[] getAll() {return letters;}
+
+    public int getCharScore(char c){
+        return scoreSG.get(c);
+    }
 
     public int getScore(){
         int score = 0;

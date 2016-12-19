@@ -364,25 +364,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onMapLongClick(LatLng latLng) {
                 boolean moved = true;//----------------------TEST
-                if (mGrabber != 0){
-                    mGrabber--;
                 for(Marker m : markers){
                     if(Math.abs(m.getPosition().latitude  - latLng.latitude)  < 0.00005 &&
                        Math.abs(m.getPosition().longitude - latLng.longitude) < 0.00005) {
                                                 //Adjust Click Range Here
-                        mLetters[Grabble.charToInt(Character.toLowerCase(m.getTitle().charAt(0)))]++;
-                        Toast.makeText(MapActivity.this, "Letter " + m.getTitle() + " collected using grabber!",
+                        if (mGrabber != 0){
+                            mLetters[Grabble.charToInt(Character.toLowerCase(m.getTitle().charAt(0)))]++;
+                            Toast.makeText(MapActivity.this, "Letter " + m.getTitle() + " collected using grabber!",
                                 Toast.LENGTH_SHORT).show();
-                        MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
-                        m.remove();
-                        markers.remove(m);
-                        moved = false;//------------TEST
+                            MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
+                            m.remove();
+                            markers.remove(m);
+                            mGrabber--;
+                            moved = false;//------------TEST
+                        }else{
+                            Toast.makeText(MapActivity.this, "You don't have any Grabber Left!",
+                                    Toast.LENGTH_SHORT).show();}
                         break;
                     }
-                }
-                }else{
-                    Toast.makeText(MapActivity.this, "You don't have any Grabber Left!",
-                            Toast.LENGTH_SHORT).show();
                 }
                 //TODO remove following move code.
                 if (moved && !zooming){

@@ -423,7 +423,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="Level Progress: (3400/3570)"
+            android:text="@string/empty_string"
             android:gravity="center"
             android:textSize="18dp"
             android:textColor="@color/colorFontBrown"
@@ -432,13 +432,13 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="60dp"
-            android:src="@drawable/scrabble_button_complete"
+            android:src="@drawable/scrabble_button_complete_n"
             android:id="@+id/scrabble_complete_button"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="You don’t have any letter E!"
+            android:text="@string/empty_string"
             android:gravity="center"
             android:textSize="18dp"
             android:textColor="@color/colorFontBrown"

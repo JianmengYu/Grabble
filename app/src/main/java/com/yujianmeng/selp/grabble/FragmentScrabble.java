@@ -199,10 +199,7 @@ public class FragmentScrabble extends Fragment{
                     case R.id.scrabble_input_z: constructString('z',2); updateUI(); break;
 
                     case R.id.scrabble_complete_button:
-                        //Log.i("TAG",dictionary.getDictionary().get(0));
-                        if (grabble.getPoint() == 7 && isWord(String.valueOf(grabble.getInput()))
-                                //dictionary.getDictionary().contains(String.valueOf(grabble.getInput()))
-                            ){
+                        if (grabble.getPoint() == 7 && isWord(String.valueOf(grabble.getInput()))){
                             addScore(grabble.completeWord());
                         };break;
                     case R.id.scrabble_discard_button:
@@ -224,6 +221,9 @@ public class FragmentScrabble extends Fragment{
                         mWarning1.setVisibility(View.VISIBLE);
                         mWarning2.setVisibility(View.VISIBLE);
                         break;
+                    case R.id.scrabble_level_button: constructString(0);break;
+                    case R.id.scrabble_exp_button: constructString(1);break;
+                    case R.id.scrabble_score_button: constructString(2);break;
                 }
             }
         };
@@ -258,6 +258,10 @@ public class FragmentScrabble extends Fragment{
         mDiscard.setOnClickListener(shortListener);
         mHelp.setOnClickListener(shortListener);
         mHelpLayout.setOnClickListener(shortListener);
+
+        mLevel.setOnClickListener(shortListener);
+        mExp.setOnClickListener(shortListener);
+        mScore.setOnClickListener(shortListener);
 
         //Set the detail function of the long clicks.
         View.OnLongClickListener longListener = new View.OnLongClickListener() {
@@ -398,7 +402,7 @@ public class FragmentScrabble extends Fragment{
         if (grabberGain > 0){grUp = "\nYou gained " + grabberGain + "x\"Grabber\"";}
         if (eagleGain > 0){eaUp = "\nYou gained " + eagleGain + "x\"Eagle Eye\"";}
         Toast t = new Toast(getActivity().getApplicationContext());
-        t.setGravity(Gravity.CENTER,0,-80);
+        t.setGravity(Gravity.TOP,0,340);
         //http://stackoverflow.com/questions/6888664/android-toast-doesnt-fit-text
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View tl = inflater.inflate(R.layout.toast_reward,null);
@@ -406,10 +410,10 @@ public class FragmentScrabble extends Fragment{
         textView.setText(point + lvUp + grUp +eaUp);
         textView.setTypeface(mFont);
         t.setView(tl);
-        t.show();
         level = newLevel;
         exp = newScore;
         updateUI();
+        t.show();
     }
 
     public boolean isWord(String word){
@@ -462,11 +466,14 @@ public class FragmentScrabble extends Fragment{
             else {mInput5.setImageResource(R.drawable.scrabble_button);}
         if (point > 5 ){mInput6.setImageResource(grabble.getImage(input[5]));}
             else {mInput6.setImageResource(R.drawable.scrabble_button);}
-        if (point > 6 ){mInput7.setImageResource(grabble.getImage(input[6]));}
-            else {mInput7.setImageResource(R.drawable.scrabble_button);}
+        if (point > 6 ){mInput7.setImageResource(grabble.getImage(input[6]));
+                        mComplete.setImageResource(R.drawable.scrabble_button_complete);}
+            else {mInput7.setImageResource(R.drawable.scrabble_button);
+                   mComplete.setImageResource(R.drawable.scrabble_button_complete_n);}
         mLevel.setText("Level: "+level);
         mExp.setText("Exp: "+exp);
         mScore.setText("Total Score: "+score);
+        mWarning1.setText("");
     }
 
     public void constructString(char c, int type){
@@ -491,6 +498,26 @@ public class FragmentScrabble extends Fragment{
                                                           " Left!");}
                      if (type2 == 2) {mWarning2.setText("You already used 7 letters!");}
                      break;
+        }
+    }
+
+    public void constructString(int type){
+        //Construct hint for warning1
+        //0 for level button, 1 for exp button, 2 for score button
+        switch (type){
+            case 0: mWarning1.setText("Your Level gives +" + level + "% range bonus.");break;
+            case 1: mWarning1.setText("Level Progress: (" + exp + "/" + levelup[level] + ").");break;
+            case 2: String word = String.valueOf(grabble.getInput());
+                    int pointer = grabble.getPoint();
+                    String[] out = new String[7];
+                    char temp;
+                    for (int i=0;i<7;i++){
+                        if (pointer > i ){
+                            temp = word.charAt(i);
+                            out[i] = Character.toUpperCase(temp) + ":" + grabble.getCharScore(temp) + " ";
+                        } else {out[i] = "";}
+                    }
+                    mWarning1.setText(out[0]+out[1]+out[2]+out[3]+out[4]+out[5]+out[6]);
         }
     }
 }
