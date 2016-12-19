@@ -40,7 +40,7 @@ public class MarkerLab {
         return sMarkerLab;
     }
 
-    private MarkerLab(Context context){
+    private MarkerLab (Context context){
         mContext = context.getApplicationContext();
         mDatabase = new MarkerBaseHelper(mContext).getWritableDatabase();
         //Skip input if there exist databse?

@@ -1,5 +1,7 @@
 package com.yujianmeng.selp.grabble;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -83,6 +85,7 @@ public class Grabble {
         }
     }
 
+    //Three helper function used to compare words
     public static char intToChar(int i){
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         return alphabet.charAt(i);
@@ -97,6 +100,23 @@ public class Grabble {
             }
         }
         return -1;
+    }
+
+    public static int compare(String a, String b){
+        //Compare two words's order in dictionary
+        //Return 1 if a before b (a...b), 2 if b before a (b...a);
+        //Return 0 if they are the same word.
+        if (a.length() != 7 || b.length() != 7){Log.i("ERROR","String of wrong length compared");return -1;}
+        String c = a.toLowerCase();
+        String d = b.toLowerCase();
+        int e; int f;
+        for (int i=0;i<7;i++){
+            //Compare Ascii value;
+            e = (int) c.charAt(i); f = (int) d.charAt(i);
+            if (e < f){return 1;}
+            if (e > f){return 2;}
+        }
+        return 0;
     }
 
     public int getPoint(){
@@ -136,7 +156,9 @@ public class Grabble {
 
     /* TODO use this to test further, or remove it
     public static void main(String[] args){
-        Grabble grabble = new Grabble();
+        int[] letters = new int[26];
+        Arrays.fill(letters,2);
+        Grabble grabble = new Grabble(letters);
         grabble.enterLetter('a');
         grabble.enterLetter('a');
         grabble.enterLetter('a');
@@ -156,6 +178,11 @@ public class Grabble {
             System.out.print(input[i]);
         }
         System.out.print('\n');
-        System.out.print(grabble.completeWord());
-    }*/
+        System.out.println(grabble.completeWord());
+        compare("aaaaaab","aaaaaaa");
+        compare("aaaaaaa","aaaaaaa");
+        compare("harambe","harambe");
+        compare("drzaius","harambe");
+    }
+    */
 }

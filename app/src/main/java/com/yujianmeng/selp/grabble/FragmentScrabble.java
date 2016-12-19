@@ -15,6 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 /**
  * Created by YuJianmeng on 2016/10/6.
  */
@@ -80,7 +84,6 @@ public class FragmentScrabble extends Fragment{
                                 8100,8900,9700,10500,11400,12300,13200,14200,15200,16200,17300,18400,19500,
                                 20700,21900,23100,24400,25700,27000,28400,29800,31200,32700,34200,35700,
                                 37300,38900,40500,42200,43900,45600,47400,49200,51000};
-    //private DictionaryLab dictionary;
 
     private Typeface mFont;
 
@@ -91,8 +94,6 @@ public class FragmentScrabble extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scrabble, container, false);
-
-        //dictionary = DictionaryLab.get(getActivity().getApplicationContext());
         SharedPreferences save = getActivity().getSharedPreferences(PREF_SAVE, 0);
         int[] letters = new int[26];
         for (int i = 0 ; i < 26 ; i++) {letters[i] = save.getInt("letter" + i,0);}
@@ -199,7 +200,7 @@ public class FragmentScrabble extends Fragment{
 
                     case R.id.scrabble_complete_button:
                         //Log.i("TAG",dictionary.getDictionary().get(0));
-                        if (grabble.getPoint() == 7 //&&
+                        if (grabble.getPoint() == 7 && isWord(String.valueOf(grabble.getInput()))
                                 //dictionary.getDictionary().contains(String.valueOf(grabble.getInput()))
                             ){
                             addScore(grabble.completeWord());
@@ -356,6 +357,9 @@ public class FragmentScrabble extends Fragment{
         super.onPause();
     }
 
+
+
+
     public void addScore(int score){
         //Calculate item reward.
         int randomD201 = (int) ((Math.random() * 20) + 1);
@@ -403,10 +407,42 @@ public class FragmentScrabble extends Fragment{
         textView.setTypeface(mFont);
         t.setView(tl);
         t.show();
-        //TODO complete reward prompt;
         level = newLevel;
         exp = newScore;
         updateUI();
+    }
+
+    public boolean isWord(String word){
+        int start = 0;
+        int end = 23869 - 1; //There are 23869 words;
+        int half;
+        word = word.toLowerCase();
+        String word2;
+        try{
+            InputStream inputStream;
+            BufferedReader reader;
+            while (start <= end){//It will complete the search in 15 times. 2^15 = 32768
+                half = (start + end)/2;
+                inputStream = getActivity().getApplicationContext().getAssets().open("grabble.txt");
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                for (int i = 0; i< half;i++){reader.readLine();}//Skip all of the not read lines;
+                word2 = reader.readLine();//Store the half into word2
+                word2 = word2.toLowerCase();
+                Log.i("TAG",word + "<end>");
+                Log.i("TAG",word2 + "<end>");
+                Log.i("TAG",half + "");
+                half = Grabble.compare(word,word2);//Use half for storing compare result temporarily;
+                Log.i("TAG",half + "");
+                switch (half){
+                    case 0: return true;//Find the word successfully
+                    case 1: end = (start + end)/2 - 1;break;
+                    case 2: start = (start + end)/2 + 1;break;
+                }
+            }
+            return false;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     public void updateUI(){
@@ -456,7 +492,6 @@ public class FragmentScrabble extends Fragment{
                      if (type2 == 2) {mWarning2.setText("You already used 7 letters!");}
                      break;
         }
-
     }
 }
 
