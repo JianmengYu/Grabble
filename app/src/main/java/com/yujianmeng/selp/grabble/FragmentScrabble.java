@@ -84,6 +84,13 @@ public class FragmentScrabble extends Fragment{
                                 8100,8900,9700,10500,11400,12300,13200,14200,15200,16200,17300,18400,19500,
                                 20700,21900,23100,24400,25700,27000,28400,29800,31200,32700,34200,35700,
                                 37300,38900,40500,42200,43900,45600,47400,49200,51000};
+    //Statistics
+    private int[] lettersUsed = new int[26];
+    private String favLetter;
+    private int favLetterUsed;
+    private String highScoreWord;
+    private int highScore;
+    private int wordCompleted;
 
     private Typeface mFont;
 
@@ -97,12 +104,19 @@ public class FragmentScrabble extends Fragment{
         SharedPreferences save = getActivity().getSharedPreferences(PREF_SAVE, 0);
         int[] letters = new int[26];
         for (int i = 0 ; i < 26 ; i++) {letters[i] = save.getInt("letter" + i,0);}
+        for (int i = 0 ; i < 26 ; i++) {lettersUsed[i] = save.getInt("letterUsed" + i,0);}
         grabble = new Grabble(letters);
         mEagle = save.getInt("eagle",0);
         mGrabber = save.getInt("grabber",0);
         exp = save.getInt("exp",0);
         level = save.getInt("level",0);
         score = grabble.getScore();
+
+        favLetter = save.getString("favLetter","N/A");
+        favLetterUsed = save.getInt("favLetterUsed",0);
+        highScoreWord = save.getString("highScoreWord","N/A");
+        highScore = save.getInt("highScore",0);
+        wordCompleted = save.getInt("wordCompleted",0);
 
         mFont = Typeface.createFromAsset(getActivity().getAssets(), "generica_bold.otf");
 
@@ -200,7 +214,24 @@ public class FragmentScrabble extends Fragment{
 
                     case R.id.scrabble_complete_button:
                         if (grabble.getPoint() == 7 && isWord(String.valueOf(grabble.getInput()))){
+                            //update favourate word.
+                            char[] c = grabble.getInput();
+                            int score = 0;
+                            for (char cha: c){
+                                int index = Grabble.charToInt(cha);
+                                if((++lettersUsed[index])>favLetterUsed){
+                                    favLetter = Character.toUpperCase(cha) + "";
+                                    favLetterUsed = lettersUsed[index];
+                                }
+                                score += grabble.getCharScore(cha);
+                            }
+                            Log.i("TAG",score+"");
+                            if (score > highScore){
+                                highScore = score;
+                                highScoreWord = String.valueOf(grabble.getInput());
+                            }
                             addScore(grabble.completeWord());
+                            wordCompleted++;
                         };break;
                     case R.id.scrabble_discard_button:
                         grabble.discardLetter();
@@ -352,10 +383,16 @@ public class FragmentScrabble extends Fragment{
         SharedPreferences.Editor editor = save.edit();
         int[] letters = grabble.getAll();
         for (int i = 0 ; i < 26 ; i++) {editor.putInt("letter" + i,letters[i]);}
+        for (int i = 0 ; i < 26 ; i++) {editor.putInt("letterUsed" + i,lettersUsed[i]);}
         editor.putInt("eagle",mEagle);
         editor.putInt("grabber",mGrabber);
         editor.putInt("exp",exp);
         editor.putInt("level",level);
+        editor.putString("favLetter",favLetter);
+        editor.putInt("favLetterUsed",favLetterUsed);
+        editor.putString("highScoreWord",highScoreWord);
+        editor.putInt("highScore",highScore);
+        editor.putInt("wordCompleted",wordCompleted);
         //Commit save before closing
         editor.commit();
         super.onPause();
@@ -402,7 +439,7 @@ public class FragmentScrabble extends Fragment{
         if (grabberGain > 0){grUp = "\nYou gained " + grabberGain + "x\"Grabber\"";}
         if (eagleGain > 0){eaUp = "\nYou gained " + eagleGain + "x\"Eagle Eye\"";}
         Toast t = new Toast(getActivity().getApplicationContext());
-        t.setGravity(Gravity.TOP,0,340);
+        t.setGravity(Gravity.CENTER,0,-80);
         //http://stackoverflow.com/questions/6888664/android-toast-doesnt-fit-text
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View tl = inflater.inflate(R.layout.toast_reward,null);

@@ -1,20 +1,25 @@
 package com.yujianmeng.selp.grabble;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -71,6 +76,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private float mMyBearing;
     private boolean zooming = false;//for test
 
+    AchievementLab achievementLab;
+    List<Achievement> achievements;
+
+    //Statistics
+    private int collected;
+    private int collectedToday;
+    private float walked;
+    private float walkedToday;
+    private int eagleUsed;
+    private int grabberUsed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +104,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         for (int i = 0 ; i < 26 ; i++) {mLetters[i] = save.getInt("letter" + i,3);}//Change the initial letter amount here.
         mEagle = save.getInt("eagle",0);
         mGrabber = save.getInt("grabber",0);
+        collected = save.getInt("collected",0);
+        collectedToday = save.getInt("collectedToday",0);
+        walked = save.getFloat("walked",0);
+        walkedToday = save.getFloat("walkedToday",0);
+        eagleUsed = save.getInt("eagleUsed",0);
+        grabberUsed = save.getInt("grabberUsed",0);
     }
 
     @Override
@@ -98,6 +120,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         for (int i = 0 ; i < 26 ; i++) {editor.putInt("letter" + i,mLetters[i]);}
         editor.putInt("eagle",mEagle);
         editor.putInt("grabber",mGrabber);
+        editor.putInt("collected",collected);
+        editor.putInt("collectedToday",collectedToday);
+        editor.putFloat("walked", (walked));
+        editor.putFloat("walkedToday", (walkedToday));
+        editor.putInt("eagleUsed",eagleUsed);
+        editor.putInt("grabberUsed",grabberUsed);
         editor.commit();
     }
 
@@ -129,6 +157,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         //TODO complete readKML
         readKml();
+
+        achievementLab = AchievementLab.get(this);
+        achievements = achievementLab.getAchievements();
         //TODO implement map,remove dummy code
         //Dummy code, add a randonm point in GS and zoom to it
         //Dummy markers - 4 corners
@@ -224,6 +255,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onClick(View v) {
                 if(mEagle != 0){
                     mEagle--;
+                    eagleUsed++;
                 CameraPosition temp = mMap.getCameraPosition();
                 zooming = true;
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
@@ -349,6 +381,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
                     marker.remove();
                     markers.remove(marker);
+                    collected++;
+                    collectedToday++;
                     Toast.makeText(getApplicationContext(),
                         "Letter " + marker.getTitle() + " collected!",
                         Toast.LENGTH_SHORT).show();
@@ -376,6 +410,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             m.remove();
                             markers.remove(m);
                             mGrabber--;
+                            grabberUsed++;
+                            collected++;
+                            collectedToday++;
                             moved = false;//------------TEST
                         }else{
                             Toast.makeText(MapActivity.this, "You don't have any Grabber Left!",
@@ -385,13 +422,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
                 //TODO remove following move code.
                 if (moved && !zooming){
-                disableControl();
-                CameraPosition temp = mMap.getCameraPosition();
-                boolean inRange = isInRange(mMyLocation,latLng,0.0005);
-                if(inRange){
-                    mMyLocation2 = latLng;
-                    mMyBearing = temp.bearing;
-                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                    disableControl();
+                    float range = distFrom(mMyLocation2,latLng);
+                    walked += range;
+                    walkedToday += range;
+                    CameraPosition temp = mMap.getCameraPosition();
+                    boolean inRange = isInRange(mMyLocation,latLng,0.0005);
+                    if(inRange){
+                        mMyLocation2 = latLng;
+                        mMyBearing = temp.bearing;
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder(temp)
                                     .target(latLng)//Initial location
                                     .build()),
@@ -401,11 +441,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                 @Override
                                 public void onCancel() {}
                             });
-                }else{
-                    mMyBearing = (float) newBearing(latLng);
-                    mMyLocation = latLng;
-                    mMyLocation2 = latLng;
-                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                    }else{
+                        mMyBearing = (float) newBearing(latLng);
+                        mMyLocation = latLng;
+                        mMyLocation2 = latLng;
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder(temp)
                                     .target(mMyLocation)//Initial location
                                     .bearing(mMyBearing)
@@ -416,7 +456,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                 @Override
                                 public void onCancel() {}
                             });
-                }}
+                    }
+                    checkAchievement();
+                }
                 //TODO end of test move code
             }
         });
@@ -491,6 +533,60 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             Math.cos(srcLat) * Math.sin(dstLat) -
                             Math.sin(srcLat) * Math.cos(dstLat) * Math.cos(dLng));
         return Math.toDegrees((returnRad + 2 * Math.PI) % (2 * Math.PI));
+    }
+
+    public static float distFrom(LatLng latlng1, LatLng latlng2) {
+        //http://stackoverflow.com/questions/837872/calculate-distance-in-meters-when-you-know-longitude-and-latitude-in-java
+        float lat1 = (float) latlng1.latitude;
+        float lng1 = (float) latlng1.longitude;
+        float lat2 = (float) latlng2.latitude;
+        float lng2 = (float) latlng2.longitude;
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        float dist = (float) (earthRadius * c);
+        return dist;
+    }
+
+    private void checkAchievement(){
+        String unlocked = "no";
+        //TODO add criteria.
+        if (walked >= 1000){if(achievementLab.updateAchievement("Walker")){//This helps run speed?
+            unlocked = "Walker";
+        }}
+        if (!unlocked.equals("no")){
+            //Prompt the Player if they unlocked an achievement.
+            //Borrows the achievement Layout of achievement list item.
+            Toast t = new Toast(getApplicationContext());
+            t.setGravity(Gravity.CENTER,0,150);
+            LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View tl = inflater.inflate(R.layout.list_item_achievement,null);
+            RelativeLayout rl2 = (RelativeLayout) tl.findViewById(R.id.achievement_brown_bg);
+            RelativeLayout rl = (RelativeLayout) tl.findViewById(R.id.achievement_bg);
+            rl.setBackgroundResource(R.drawable.design_achievement_bg_t);
+            rl2.setBackgroundResource(R.color.colorTransparent);
+            ImageView im = (ImageView) tl.findViewById(R.id.achievement_image);
+            TextView tv1 = (TextView) tl.findViewById(R.id.achievement_name);
+            TextView tv2 = (TextView) tl.findViewById(R.id.achievement_descript);
+            TextView tv3 = (TextView) tl.findViewById(R.id.achievement_time);
+            Typeface font = Typeface.createFromAsset(getAssets(), "generica_bold.otf");
+            Achievement a = new Achievement();
+            a.setmName(unlocked);
+            im.setImageResource(a.getImageString());
+            tv1.setTypeface(font);
+            tv2.setTypeface(font);
+            tv1.setText("Achievement Unlocked!");
+            tv1.setTextSize(10);
+            tv2.setText("\"" + unlocked + "\"");
+            tv2.setTextSize(20);
+            tv3.setText("");
+            t.setView(tl);
+            t.show();
+        }
     }
 
     private void readKml(){

@@ -2,6 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="78dp"
     android:paddingTop="4dp"
+    android:id="@+id/achievement_brown_bg"
     android:background="@color/colorBGbrown">
 
     <RelativeLayout

@@ -23,14 +23,14 @@
     <string name="statistics_02">Word Completed:</string>
     <string name="statistics_03">Average Score:</string>
     <string name="statistics_04">Favourite Letter:</string>
-    <string name="statistics_05">Favourite Word:</string>
+    <string name="statistics_05">Fav Letter used:</string>
     <string name="statistics_06">Highest Score:</string>
     <string name="statistics_07">Highscore Word:</string>
     <string name="statistics_08">Letters Collected:</string>
     <string name="statistics_09">Collected Today:</string>
     <string name="statistics_10">Walked Distance:</string>
     <string name="statistics_11">Walked Today:</string>
-    <string name="statistics_12">Eagle Used:</string>
+    <string name="statistics_12">Eagle Eye Used:</string>
     <string name="statistics_13">Grabber Used:</string>
 
     <!--Settings Page Strings-->

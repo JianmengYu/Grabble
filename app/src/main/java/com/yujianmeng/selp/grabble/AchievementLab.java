@@ -90,6 +90,29 @@ public class AchievementLab {
         }
     }
 
+    public boolean updateAchievement(String achievementName){
+        AchievementCursorWrapper cursor = queryAchievements(
+                AchievementTable.Cols.NAMES + " = ?",
+                new String[] {achievementName});
+        boolean completed;
+        try {
+            cursor.moveToFirst();
+            Achievement change = cursor.getAchievement();
+            completed = change.getmDate().equals("No Unlocked Yet");
+            if (completed) {
+                Date date = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss,yyyy-MM-dd");
+                change.setmDate("Unlocked at: " + dateFormat.format(date));
+                ContentValues values = getContentValues(change);
+                mDatabase.update(AchievementTable.NAME, values, AchievementTable.Cols.UUID + " = ?",
+                        new String[]{change.getmID().toString()});
+            }
+        } finally {
+            cursor.close();
+        }
+        return completed;
+    }
+
     public void updateAchievement(Achievement achievement, boolean unlock){
         //TODO change to unlock Achievement and remove the "lock" option.
         String uuidString = achievement.getmID().toString();

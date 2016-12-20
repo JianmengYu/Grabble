@@ -7,6 +7,7 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
     <color name="colorBGblack">#D9000000</color>
+    <color name="colorTransparent">#00000000</color>
     <!--Design colors-->
     <color name="colorBGbrown">#ece4d3</color>
     <color name="colorBGgreen">#cbe6a3</color>

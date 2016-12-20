@@ -1,5 +1,6 @@
 package com.yujianmeng.selp.grabble;
 
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 public class FragmentStatistics extends Fragment {
 
+    private static final String PREF_SAVE = "MySaveFile";
     // SX means Xth statistic, N/V stands for name/value
     private TextView mS1N;
     private TextView mS1V;
@@ -74,6 +76,37 @@ public class FragmentStatistics extends Fragment {
         mS11V = (TextView) view.findViewById(R.id.statistics_11_value);
         mS12V = (TextView) view.findViewById(R.id.statistics_12_value);
         mS13V = (TextView) view.findViewById(R.id.statistics_13_value);
+
+        SharedPreferences save = getActivity().getSharedPreferences(PREF_SAVE, 0);
+        int exp = save.getInt("exp",0);
+        int wordCompleted = save.getInt("wordCompleted",0);
+        mS1V.setText(exp+"");
+        mS2V.setText(wordCompleted+"");
+        if (wordCompleted == 0){
+            mS3V.setText("0");
+        }else{
+            mS3V.setText(exp/wordCompleted + "");
+        }
+        mS4V.setText(save.getString("favLetter","N/A").toUpperCase());
+        mS5V.setText(save.getInt("favLetterUsed",0)+"");
+        mS6V.setText(save.getInt("highScore",0)+"");
+        mS7V.setText(save.getString("highScoreWord","N/A"));
+        mS8V.setText(save.getInt("collected",0)+"");
+        mS9V.setText(save.getInt("collectedToday",0)+"");
+        float walked = save.getFloat("walked",0);
+        if (walked < 5000) {
+            mS10V.setText(String.format("%.2f", walked) +"m");
+        }else{
+            mS10V.setText(String.format("%.2f", walked/1000) +"km");
+        }
+        float walkedToday = save.getFloat("walkedToday",0);
+        if (walkedToday < 5000) {
+            mS11V.setText(String.format("%.2f", walkedToday) +"m");
+        }else{
+            mS11V.setText(String.format("%.2f", walkedToday/1000) +"km");
+        }
+        mS12V.setText(save.getInt("eagleUsed",0)+"");
+        mS13V.setText(save.getInt("grabberUsed",0)+"");
 
         mS1N.setTypeface(mFont);mS1V.setTypeface(mFont);
         mS2N.setTypeface(mFont);mS2V.setTypeface(mFont);
