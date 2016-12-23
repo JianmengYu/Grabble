@@ -102,28 +102,6 @@ public class FragmentAchievement extends Fragment {
                 mDescription.setText(mAchievement.getmHint());
                 mDate.setText("");
             }
-
-            mBG.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AchievementLab.get(getActivity()).updateAchievement(mAchievement,true);
-                    mBG.setBackgroundResource(R.drawable.design_achievement_bg_t);
-                    mDescription.setText(mAchievement.getmDescription());
-                    mDate.setText(mAchievement.getmDate());
-                    mImage.setImageResource(mAchievement.getImageString());
-                }
-            });
-            mBG.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    AchievementLab.get(getActivity()).updateAchievement(mAchievement,false);
-                    mBG.setBackgroundResource(R.drawable.design_achievement_bg_f);
-                    mDescription.setText(mAchievement.getmHint());
-                    mDate.setText("");
-                    mImage.setImageResource(R.drawable.achievement_icon_lock);
-                    return true;
-                }
-            });
         }
     }
 

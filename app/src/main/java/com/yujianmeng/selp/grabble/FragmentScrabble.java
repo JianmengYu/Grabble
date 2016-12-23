@@ -18,6 +18,7 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 /**
  * Created by YuJianmeng on 2016/10/6.
@@ -91,8 +92,17 @@ public class FragmentScrabble extends Fragment{
     private String highScoreWord;
     private int highScore;
     private int wordCompleted;
+    private String prevWord1;
+    private String prevWord2;
+    private String prevWord3;
+    private int prevScore1;
+    private int prevScore2;
+    private int prevScore3;
 
     private Typeface mFont;
+
+    AchievementLab achievementLab;
+    List<Achievement> achievements;
 
     //Temp stuff
     private RelativeLayout mInput;
@@ -117,6 +127,13 @@ public class FragmentScrabble extends Fragment{
         highScoreWord = save.getString("highScoreWord","N/A");
         highScore = save.getInt("highScore",0);
         wordCompleted = save.getInt("wordCompleted",0);
+        prevWord1 = save.getString("prevWord1","");
+        prevWord2 = save.getString("prevWord2","");
+        prevScore1 = save.getInt("prevScore1",50);//Prevent achievement on first word
+        prevScore2 = save.getInt("prevScore2",50);
+
+        achievementLab = AchievementLab.get(getActivity());
+        achievements = achievementLab.getAchievements();
 
         mFont = Typeface.createFromAsset(getActivity().getAssets(), "generica_bold.otf");
 
@@ -213,6 +230,14 @@ public class FragmentScrabble extends Fragment{
                     case R.id.scrabble_input_z: constructString('z',2); updateUI(); break;
 
                     case R.id.scrabble_complete_button:
+                        //Achievement Check First;
+                        if (grabble.getPoint() == 7){
+                            //Enter a none-available word still count as entered.
+                            prevWord3 = prevWord2;
+                            prevWord2 = prevWord1;
+                            prevWord1 = String.valueOf(grabble.getInput());
+                        }
+                        //Then the word check;
                         if (grabble.getPoint() == 7 && isWord(String.valueOf(grabble.getInput()))){
                             //update favourate word.
                             char[] c = grabble.getInput();
@@ -226,13 +251,18 @@ public class FragmentScrabble extends Fragment{
                                 score += grabble.getCharScore(cha);
                             }
                             Log.i("TAG",score+"");
+                            prevScore3 = prevScore2;
+                            prevScore2 = prevScore1;
+                            prevScore1 = score;
                             if (score > highScore){
                                 highScore = score;
                                 highScoreWord = String.valueOf(grabble.getInput());
                             }
                             addScore(grabble.completeWord());
                             wordCompleted++;
-                        };break;
+                        }
+                        checkAchievement();
+                        break;
                     case R.id.scrabble_discard_button:
                         grabble.discardLetter();
                         updateUI();
@@ -393,6 +423,10 @@ public class FragmentScrabble extends Fragment{
         editor.putString("highScoreWord",highScoreWord);
         editor.putInt("highScore",highScore);
         editor.putInt("wordCompleted",wordCompleted);
+        editor.putString("prevWord1",prevWord1);
+        editor.putString("prevWord2",prevWord2);
+        editor.putInt("prevScore1",prevScore1);
+        editor.putInt("prevScore2",prevScore2);
         //Commit save before closing
         editor.commit();
         super.onPause();
@@ -555,6 +589,98 @@ public class FragmentScrabble extends Fragment{
                         } else {out[i] = "";}
                     }
                     mWarning1.setText(out[0]+out[1]+out[2]+out[3]+out[4]+out[5]+out[6]);
+        }
+    }
+
+    private void checkAchievement(){
+        String unlocked = "no";
+        //Check achievement unlocked
+        if (score >= 100){if(achievementLab.updateAchievement("A New Player in Town")){
+            unlocked = "A New Player in Town";}}
+        if (score >= 1000){if(achievementLab.updateAchievement("Grabbled")){
+            unlocked = "Grabbled";}}
+        if (score >= 9000){if(achievementLab.updateAchievement("It's OVER 9000!")){
+            unlocked = "It's OVER 9000!";}}
+        if (score >= 50000){if(achievementLab.updateAchievement("Obsessed")){
+            unlocked = "Obsessed";}}
+        if (score >= 100000){if(achievementLab.updateAchievement("Maniac!")){
+            unlocked = "Maniac!";}}
+        if (wordCompleted >= 1){if(achievementLab.updateAchievement("My First Word!")){
+            unlocked = "My First Word!";}}
+        if (wordCompleted >= 10){if(achievementLab.updateAchievement("Out of Words.. Almost")){
+            unlocked = "Out of Words.. Almost";}}
+        if (wordCompleted >= 100){if(achievementLab.updateAchievement("Knows how to Google")){
+            unlocked = "Knows how to Google";}}
+        if (wordCompleted >= 500){if(achievementLab.updateAchievement("Linguist")){
+            unlocked = "Linguist";}}
+        if (wordCompleted >= 1000){if(achievementLab.updateAchievement("Living Dictionary")){
+            unlocked = "Living Dictionary";}}
+        if (mGrabber >= 100 && mEagle >= 100){if(achievementLab.updateAchievement("Bona Fide Player")){
+            unlocked = "Bona Fide Player";}}
+
+        if (prevScore1 <= 40 && prevScore2 <= 40 && prevScore3 <= 40){if(achievementLab.updateAchievement("Toddler")){
+            unlocked = "Toddler";}}
+        if (prevScore1 >= 80 && prevScore2 >= 80 && prevScore3 >= 80){if(achievementLab.updateAchievement("Bachelor")){
+            unlocked = "Bachelor";}}
+        if (prevWord1.equals("abcdefg")){if(achievementLab.updateAchievement("Clueless")){
+            unlocked = "Clueless";}}
+        if (prevWord1.equals("grabble")){if(achievementLab.updateAchievement("Still Clueless")){
+            unlocked = "Still Clueless";}}
+        if (prevWord1.equals("spartan")){if(achievementLab.updateAchievement("Madness?")){
+            unlocked = "Madness?";}}
+        if (prevWord1.equals("hillary")){if(achievementLab.updateAchievement("Hillarious")){
+            unlocked = "Hillarious";}}
+        if (prevWord1.equals("djtrump")){if(achievementLab.updateAchievement("President Musician")){
+            unlocked = "President Musician";}}
+        if (prevWord1.equals("drzaius")){if(achievementLab.updateAchievement("Planet Apes: the Musical")){
+            unlocked = "Planet Apes: the Musical";}}
+        if (prevWord1.equals("harambe")){if(achievementLab.updateAchievement("The Gorilla Savior")){
+            unlocked = "The Gorilla Savior";}}
+        if (prevWord1.equals("winston")){if(achievementLab.updateAchievement("MLG gamer")){
+            unlocked = "MLG gamer";}}
+        if (prevWord1.equals("songoku")){if(achievementLab.updateAchievement("Super Saiyan")){
+            unlocked = "Super Saiyan";}}
+        if (prevWord1.equals("primate")){if(achievementLab.updateAchievement("Top of the Revolution")){
+            unlocked = "Top of the Revolution";}}
+
+        if (prevWord1.equals("america") && prevWord2.equals("america") && prevWord3.equals("america")){
+            if(achievementLab.updateAchievement("Realm of Freedom")){
+                unlocked = "Realm of Freedom";}}
+        if (prevWord1.equals("monkeys") && prevWord2.equals("monkeys") && prevWord3.equals("monkeys")){
+            if(achievementLab.updateAchievement("Monkey Lover")){
+                unlocked = "Monkey Lover";}}
+        if (prevWord1.equals("gorilla") && prevWord2.equals("gorilla") && prevWord3.equals("gorilla")){
+            if(achievementLab.updateAchievement("Gorillaphilia")){
+                unlocked = "Gorillaphilia";}}
+        //Start construct Toast
+        if (!unlocked.equals("no")){
+            //Prompt the Player if they unlocked an achievement.
+            //Borrows the achievement Layout of achievement list item.
+            Toast t = new Toast(getActivity().getApplicationContext());
+            t.setGravity(Gravity.CENTER,0,150);
+            LayoutInflater inflater = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View tl = inflater.inflate(R.layout.list_item_achievement,null);
+            RelativeLayout rl2 = (RelativeLayout) tl.findViewById(R.id.achievement_brown_bg);
+            RelativeLayout rl = (RelativeLayout) tl.findViewById(R.id.achievement_bg);
+            rl.setBackgroundResource(R.drawable.design_achievement_bg_t);
+            rl2.setBackgroundResource(R.color.colorTransparent);
+            ImageView im = (ImageView) tl.findViewById(R.id.achievement_image);
+            TextView tv1 = (TextView) tl.findViewById(R.id.achievement_name);
+            TextView tv2 = (TextView) tl.findViewById(R.id.achievement_descript);
+            TextView tv3 = (TextView) tl.findViewById(R.id.achievement_time);
+            Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "generica_bold.otf");
+            Achievement a = new Achievement();
+            a.setmName(unlocked);
+            im.setImageResource(a.getImageString());
+            tv1.setTypeface(font);
+            tv2.setTypeface(font);
+            tv1.setText("Achievement Unlocked!");
+            tv1.setTextSize(10);
+            tv2.setText("\"" + unlocked + "\"");
+            tv2.setTextSize(20);
+            tv3.setText("");
+            t.setView(tl);
+            t.show();
         }
     }
 }

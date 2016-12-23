@@ -256,6 +256,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 if(mEagle != 0){
                     mEagle--;
                     eagleUsed++;
+                    checkAchievement();
                 CameraPosition temp = mMap.getCameraPosition();
                 zooming = true;
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
@@ -391,6 +392,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             "Too Far! \nYou have " + mGrabber + " Grabber left.",
                             Toast.LENGTH_SHORT).show();
                 }
+                checkAchievement();
                 return true;
             }
         });
@@ -457,8 +459,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                 public void onCancel() {}
                             });
                     }
-                    checkAchievement();
                 }
+                checkAchievement();
                 //TODO end of test move code
             }
         });
@@ -554,10 +556,36 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     private void checkAchievement(){
         String unlocked = "no";
-        //TODO add criteria.
+        //Check achievement unlocked
         if (walked >= 1000){if(achievementLab.updateAchievement("Walker")){//This helps run speed?
-            unlocked = "Walker";
-        }}
+            unlocked = "Walker";}}
+        if (walked >= 10000){if(achievementLab.updateAchievement("Runner")){
+            unlocked = "Runner";}}
+        if (walked >= 42000){if(achievementLab.updateAchievement("Marathon Runner")){
+            unlocked = "Marathon Runner";}}
+        if (walked >= 100000){if(achievementLab.updateAchievement("Flash")){
+            unlocked = "Flash";}}
+        if (walked >= 500000){if(achievementLab.updateAchievement("Traveler")){
+            unlocked = "Traveler";}}
+        if (collected >= 20){if(achievementLab.updateAchievement("Collector")){
+            unlocked = "Collector";}}
+        if (collected >= 100){if(achievementLab.updateAchievement("Scavenger")){
+            unlocked = "Scavenger";}}
+        if (collected >= 500){if(achievementLab.updateAchievement("Pack Rat")){
+            unlocked = "Pack Rat";}}
+        if (collected >= 1000){if(achievementLab.updateAchievement("Connoisseur")){
+            unlocked = "Connoisseur";}}
+        if (collectedToday >= 1000){if(achievementLab.updateAchievement("Antiquarian")){
+            unlocked = "Antiquarian";}}
+        if (grabberUsed >= 5){if(achievementLab.updateAchievement("Grabber User")){
+            unlocked = "Grabber User";}}
+        if (grabberUsed >= 50){if(achievementLab.updateAchievement("Lazy Grabber User")){
+            unlocked = "Lazy Grabber User";}}
+        if (eagleUsed >= 5){if(achievementLab.updateAchievement("Peeping Tom")){
+            unlocked = "Peeping Tom";}}
+        if (eagleUsed >= 50){if(achievementLab.updateAchievement("George Square have eyes")){
+            unlocked = "George Square have eyes";}}
+        //Start construct Toast
         if (!unlocked.equals("no")){
             //Prompt the Player if they unlocked an achievement.
             //Borrows the achievement Layout of achievement list item.

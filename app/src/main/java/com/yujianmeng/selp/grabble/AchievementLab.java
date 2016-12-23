@@ -106,29 +106,13 @@ public class AchievementLab {
                 ContentValues values = getContentValues(change);
                 mDatabase.update(AchievementTable.NAME, values, AchievementTable.Cols.UUID + " = ?",
                         new String[]{change.getmID().toString()});
+            }else{
+                return false;
             }
         } finally {
             cursor.close();
         }
-        return completed;
-    }
-
-    public void updateAchievement(Achievement achievement, boolean unlock){
-        //TODO change to unlock Achievement and remove the "lock" option.
-        String uuidString = achievement.getmID().toString();
-        boolean completed = !achievement.getmDate().equals("No Unlocked Yet");
-        if (unlock){
-            if (!completed) {
-                Date date = new Date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss,yyyy-MM-dd");
-                achievement.setmDate("Unlocked at: " + dateFormat.format(date));
-            }
-        }else{
-            achievement.setmDate("No Unlocked Yet");
-        }
-        ContentValues values = getContentValues(achievement);
-        mDatabase.update(AchievementTable.NAME, values, AchievementTable.Cols.UUID + " = ?",
-                new String[] {uuidString});
+        return true;
     }
 
     private static ContentValues getContentValues(Achievement achievement){
