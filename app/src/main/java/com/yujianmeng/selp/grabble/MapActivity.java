@@ -132,7 +132,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     @Override
-    protected void onStart(){
+    protected void onResume(){
         SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
         for (int i = 0 ; i < 26 ; i++) {mLetters[i] = save.getInt("letter" + i,3);}//Change the initial letter amount here.
         mEagle = save.getInt("eagle",0);
@@ -153,12 +153,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             grabDistance = 0.0003;
         }
         Log.i("MAP","onStart called");
-        super.onStart();
+        super.onResume();
         updateUI();
     }
 
     @Override
-    protected void onStop(){
+    protected void onPause(){
         SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
         SharedPreferences.Editor editor = save.edit();
         for (int i = 0 ; i < 26 ; i++) {editor.putInt("letter" + i,mLetters[i]);}
@@ -172,19 +172,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         editor.putInt("grabberUsed",grabberUsed);
         editor.commit();
         Log.i("MAP","onStop called");
-        super.onStop();
-    }
-
-    @Override
-    protected void onResume(){
-        Log.i("MAP","onResume called");
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause(){
-        Log.i("MAP","onPause called");
         super.onPause();
+    }
+
+    @Override
+    protected void onStart(){
+        Log.i("MAP","onResume called");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop(){
+        Log.i("MAP","onPause called");
+        super.onStop();
     }
 
     @Override
