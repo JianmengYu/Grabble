@@ -154,36 +154,4 @@ public class Grabble {
         if (c == 'z'){return R.drawable.scrabble_button_z;}
         return R.drawable.scrabble_button;
     }
-
-    /* TODO use this to test further, or remove it
-    public static void main(String[] args){
-        int[] letters = new int[26];
-        Arrays.fill(letters,2);
-        Grabble grabble = new Grabble(letters);
-        grabble.enterLetter('a');
-        grabble.enterLetter('a');
-        grabble.enterLetter('a');
-        char[] input = grabble.getInput();
-        System.out.print(String.valueOf(input));
-        System.out.print('\n');
-        grabble.discardAll();
-        grabble.enterLetter('h');
-        grabble.enterLetter('a');
-        grabble.enterLetter('r');
-        grabble.enterLetter('a');
-        grabble.enterLetter('m');
-        grabble.enterLetter('b');
-        grabble.enterLetter('e');
-        input = grabble.getInput();
-        for (int i = 0; i < 7; i++){
-            System.out.print(input[i]);
-        }
-        System.out.print('\n');
-        System.out.println(grabble.completeWord());
-        compare("aaaaaab","aaaaaaa");
-        compare("aaaaaaa","aaaaaaa");
-        compare("harambe","harambe");
-        compare("drzaius","harambe");
-    }
-    */
 }

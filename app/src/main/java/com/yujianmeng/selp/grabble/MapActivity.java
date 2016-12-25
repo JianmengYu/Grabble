@@ -63,17 +63,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private ImageView mMenuSettings;
     private ImageView mMenuAbout;
     private ImageView mHelp;
+    private Button mButtonEagle2;
+    private Button mButtonHelp2;
+    private Button mButtonGrabble2;
+    private Button mButtonMenu2;
+    private RelativeLayout mPrompt;
+    private ImageView mPromptYes;
     private GoogleApiClient mGoogleApiClient;
 
     private Marker marker;
     private ArrayList<Marker> markers = new ArrayList<Marker>();
 
+    private boolean leftHand;
+    private boolean noHelp;
+    private boolean levelBonus;
+    private int level;
+    private double grabDistance = 0.0003;
     private LatLng mMyLocation;//For camera
     private LatLng mMyLocation2;//Actual location
     private int[] mLetters = new int[26];
     private int mEagle;
     private int mGrabber;
     private float mMyBearing;
+    private boolean promptOpened = false;
     private boolean zooming = false;//for test
 
     AchievementLab achievementLab;
@@ -95,11 +107,32 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //Initialize buttons on the map
+        mButtonLeftTurn = (Button) findViewById(R.id.button_left_turn);
+        mButtonRightTurn = (Button) findViewById(R.id.button_right_turn);
+        mButtonEagle = (Button) findViewById(R.id.button_eagle);
+        mButtonHelp = (Button) findViewById(R.id.button_help);
+        mButtonGrabble = (Button) findViewById(R.id.button_grabble);
+        mButtonMenu = (Button) findViewById(R.id.button_menu);
+        mMenu = (RelativeLayout) findViewById(R.id.map_layout_menu);
+        mHelp = (ImageView) findViewById(R.id.map_help);
+        mMenuAchievement = (ImageView) findViewById(R.id.map_menu_achievement);
+        mMenuStatistics = (ImageView) findViewById(R.id.map_menu_statistics);
+        mMenuSettings = (ImageView) findViewById(R.id.map_menu_settings);
+        mMenuAbout = (ImageView) findViewById(R.id.map_menu_about);
+
+        mButtonEagle2 = (Button) findViewById(R.id.button_eagle2);
+        mButtonHelp2 = (Button) findViewById(R.id.button_help2);
+        mButtonGrabble2 = (Button) findViewById(R.id.button_grabble2);
+        mButtonMenu2 = (Button) findViewById(R.id.button_menu2);
+
+        mPrompt = (RelativeLayout) findViewById(R.id.prompt_layout);
+        mPromptYes = (ImageView) findViewById(R.id.prompt_yes);
     }
 
     @Override
-    protected void onResume(){
-        super.onResume();
+    protected void onStart(){
         SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
         for (int i = 0 ; i < 26 ; i++) {mLetters[i] = save.getInt("letter" + i,3);}//Change the initial letter amount here.
         mEagle = save.getInt("eagle",0);
@@ -110,11 +143,22 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         walkedToday = save.getFloat("walkedToday",0);
         eagleUsed = save.getInt("eagleUsed",0);
         grabberUsed = save.getInt("grabberUsed",0);
+        leftHand = save.getBoolean("leftHand",false);
+        noHelp = save.getBoolean("noHelp",false);
+        levelBonus = save.getBoolean("levelBonus",true);
+        level = save.getInt("level",0);
+        if (levelBonus) {
+            grabDistance = 0.0003 * (1 + 0.01 * level);
+        }else{
+            grabDistance = 0.0003;
+        }
+        Log.i("MAP","onStart called");
+        super.onStart();
+        updateUI();
     }
 
     @Override
-    protected void onPause(){
-        super.onPause();
+    protected void onStop(){
         SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
         SharedPreferences.Editor editor = save.edit();
         for (int i = 0 ; i < 26 ; i++) {editor.putInt("letter" + i,mLetters[i]);}
@@ -127,6 +171,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         editor.putInt("eagleUsed",eagleUsed);
         editor.putInt("grabberUsed",grabberUsed);
         editor.commit();
+        Log.i("MAP","onStop called");
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume(){
+        Log.i("MAP","onResume called");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause(){
+        Log.i("MAP","onPause called");
+        super.onPause();
     }
 
     @Override
@@ -138,6 +196,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 mMenu.setVisibility(View.VISIBLE);
             }
             return true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            if(!promptOpened){
+                promptOpened = true;
+                mPrompt.setVisibility(View.VISIBLE);
+                return false;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -155,64 +220,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //TODO complete readKML
+        //TODO Download Online kml
+        //TODO Add Async to enhance performance.
         readKml();
 
         achievementLab = AchievementLab.get(this);
         achievements = achievementLab.getAchievements();
-        //TODO implement map,remove dummy code
-        //Dummy code, add a randonm point in GS and zoom to it
-        //Dummy markers - 4 corners
-        /*
-        LatLng george1 = new LatLng(55.946, -3.184);
-        MarkerOptions marker1 = new MarkerOptions()
-                .position(george1)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
-                .title("Point1");
-        marker = mMap.addMarker(marker1);
-        markers.add(marker);
-        LatLng george2 = new LatLng(55.942, -3.192);
-        MarkerOptions marker2 = new MarkerOptions()
-                .position(george2)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
-                .title("Point2");
-        marker = mMap.addMarker(marker2);
-        markers.add(marker);
-
-        LatLng george3 = new LatLng(55.946, -3.192);
-        MarkerOptions marker3 = new MarkerOptions()
-                .position(george3)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
-                .title("Point3");
-        marker = mMap.addMarker(marker3);
-        markers.add(marker);
-
-        LatLng george4 = new LatLng(55.942, -3.184);
-        MarkerOptions marker4 = new MarkerOptions()
-                .position(george4)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickable_sample))
-                .title("Point4");
-        marker = mMap.addMarker(marker4);
-        markers.add(marker);
-        */
-        //Sqaure markers
-        LatLng pointsamp1 = new LatLng(55.943, -3.189);
-        //TEMP start location
-        //TODO end of map dummy code
-
-        //Initialize buttons on the map
-        mButtonLeftTurn = (Button) findViewById(R.id.button_left_turn);
-        mButtonRightTurn = (Button) findViewById(R.id.button_right_turn);
-        mButtonEagle = (Button) findViewById(R.id.button_eagle);
-        mButtonHelp = (Button) findViewById(R.id.button_help);
-        mButtonGrabble = (Button) findViewById(R.id.button_grabble);
-        mButtonMenu = (Button) findViewById(R.id.button_menu);
-        mMenu = (RelativeLayout) findViewById(R.id.map_layout_menu);
-        mHelp = (ImageView) findViewById(R.id.map_help);
-        mMenuAchievement = (ImageView) findViewById(R.id.map_menu_achievement);
-        mMenuStatistics = (ImageView) findViewById(R.id.map_menu_statistics);
-        mMenuSettings = (ImageView) findViewById(R.id.map_menu_settings);
-        mMenuAbout = (ImageView) findViewById(R.id.map_menu_about);
 
         mButtonLeftTurn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,46 +263,48 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 return true;
             }
         });
-        mButtonEagle.setOnClickListener(new View.OnClickListener() {
+
+        View.OnClickListener eagleOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mEagle != 0){
+                if (mEagle != 0) {
                     mEagle--;
                     eagleUsed++;
                     checkAchievement();
-                CameraPosition temp = mMap.getCameraPosition();
-                zooming = true;
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                        new CameraPosition.Builder(temp).zoom(temp.zoom - 1).build()
-                ));
-                disableControl();//Disable the control temporarily to prevent cheat.
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        CameraPosition temp = mMap.getCameraPosition();
-                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                                new CameraPosition.Builder(temp).zoom(temp.zoom + 1).build()
-                                ),
-                                new GoogleMap.CancelableCallback() {
-                                    @Override
-                                    public void onFinish() {
-                                        enableControl();
-                                        zooming = false;
-                                    }//Return controls
+                    CameraPosition temp = mMap.getCameraPosition();
+                    zooming = true;
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition.Builder(temp).zoom(temp.zoom - 1).build()
+                    ));
+                    disableControl();//Disable the control temporarily to prevent cheat.
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            CameraPosition temp = mMap.getCameraPosition();
+                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                                    new CameraPosition.Builder(temp).zoom(temp.zoom + 1).build()
+                                    ),
+                                    new GoogleMap.CancelableCallback() {
+                                        @Override
+                                        public void onFinish() {
+                                            enableControl();
+                                            zooming = false;
+                                        }//Return controls
 
-                                    @Override
-                                    public void onCancel() {
-                                    }
-                                });
-                    }
-                }, 5000);}else{
+                                        @Override
+                                        public void onCancel() {
+                                        }
+                                    });
+                        }
+                    }, 5000);
+                } else {
                     Toast.makeText(MapActivity.this, "You have no Eagle Eye left!",
                             Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-        mButtonEagle.setOnLongClickListener(new View.OnLongClickListener() {
+        };
+        View.OnLongClickListener eagleOnLongClick = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if(mEagle == 0){
@@ -301,15 +316,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
                 return true;
             }
-        });
-        mButtonGrabble.setOnClickListener(new View.OnClickListener() {
+        };
+        View.OnClickListener grabbleOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), ActivityScrabble.class);
                 startActivity(i);
             }
-        });
-        mButtonHelp.setOnClickListener(new View.OnClickListener() {
+        };
+        View.OnClickListener helpOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mHelp.getVisibility() == View.VISIBLE) {
@@ -318,14 +333,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     mHelp.setVisibility(View.VISIBLE);
                 }
             }
-        });
-        mHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHelp.setVisibility(View.INVISIBLE);
-            }
-        });
-        mButtonMenu.setOnClickListener(new View.OnClickListener() {
+        };
+        View.OnClickListener menuOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mMenu.getVisibility() == View.VISIBLE) {
@@ -334,7 +343,38 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     mMenu.setVisibility(View.VISIBLE);
                 }
             }
+        };
+        mButtonEagle.setOnClickListener(eagleOnClick);
+        mButtonEagle.setOnLongClickListener(eagleOnLongClick);
+        mButtonGrabble.setOnClickListener(grabbleOnClick);
+        mButtonHelp.setOnClickListener(helpOnClick);
+        mButtonMenu.setOnClickListener(menuOnClick);
+        mButtonEagle2.setOnClickListener(eagleOnClick);
+        mButtonEagle2.setOnLongClickListener(eagleOnLongClick);
+        mButtonGrabble2.setOnClickListener(grabbleOnClick);
+        mButtonHelp2.setOnClickListener(helpOnClick);
+        mButtonMenu2.setOnClickListener(menuOnClick);
+        mHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHelp.setVisibility(View.INVISIBLE);
+            }
         });
+
+        mPromptYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        mPrompt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promptOpened = false;
+                mPrompt.setVisibility(View.INVISIBLE);
+            }
+        });
+
         //http://stackoverflow.com/questions/28177882/is-it-possible-to-go-to-a-specific-page-of-a-viewpager-from-other-activity
         mMenuAchievement.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -376,7 +416,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if(isInRange(mMyLocation2,marker.getPosition(),0.0003)){
+                if(isInRange(mMyLocation2,marker.getPosition(),grabDistance)){
                     mLetters[Grabble.charToInt(Character.toLowerCase(marker.getTitle().charAt(0)))]++;
                     Log.i("TAG",marker.getSnippet());
                     MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
@@ -460,8 +500,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             });
                     }
                 }
-                checkAchievement();
                 //TODO end of test move code
+                checkAchievement();
             }
         });
 
@@ -469,6 +509,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         disableControl();//Prevent Cheat, re-enable during camera initialization
 
         //TODO get my location;
+        //TEMP start location
+        LatLng pointsamp1 = new LatLng(55.943, -3.189);
+
         /*
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -480,9 +523,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         Location myLocation = mMap.getMyLocation();//Useless!
         LatLng myLatLng = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
         */
-        mMyLocation = pointsamp1;
-        mMyLocation2 = pointsamp1;
-
+        mMyLocation = pointsamp1;//Location for camera
+        mMyLocation2 = pointsamp1;//Location for actual position
 
         CameraPosition testAngle = new CameraPosition.Builder()
                 .target(mMyLocation)//Initial location
@@ -497,6 +539,33 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     @Override
                     public void onCancel() {}
                 });
+    }
+
+    private void updateUI(){
+        //Update left hand mode/ Help Button
+        if (leftHand){
+            mButtonHelp.setVisibility(View.INVISIBLE);
+            mButtonEagle.setVisibility(View.INVISIBLE);
+            mButtonMenu.setVisibility(View.INVISIBLE);
+            mButtonGrabble.setVisibility(View.INVISIBLE);
+            mButtonHelp2.setVisibility(View.VISIBLE);
+            mButtonEagle2.setVisibility(View.VISIBLE);
+            mButtonMenu2.setVisibility(View.VISIBLE);
+            mButtonGrabble2.setVisibility(View.VISIBLE);
+        }else{
+            mButtonHelp.setVisibility(View.VISIBLE);
+            mButtonEagle.setVisibility(View.VISIBLE);
+            mButtonMenu.setVisibility(View.VISIBLE);
+            mButtonGrabble.setVisibility(View.VISIBLE);
+            mButtonHelp2.setVisibility(View.INVISIBLE);
+            mButtonEagle2.setVisibility(View.INVISIBLE);
+            mButtonMenu2.setVisibility(View.INVISIBLE);
+            mButtonGrabble2.setVisibility(View.INVISIBLE);
+        }
+        if (noHelp){
+            mButtonHelp.setVisibility(View.INVISIBLE);
+            mButtonHelp2.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void disableControl(){

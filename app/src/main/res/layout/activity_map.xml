@@ -53,10 +53,29 @@
         <Button
             android:layout_width="64dp"
             android:layout_height="64dp"
+            android:id="@+id/button_eagle2"
+            android:background="@drawable/button_eagle"
+            android:visibility="invisible"
+            android:padding="4dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/button_right_turn"/>
+
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:id="@+id/button_help"
             android:background="@drawable/button_help"
             android:padding="4dp"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/button_help2"
+            android:background="@drawable/button_help"
+            android:padding="4dp"
+            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"/>
 
         <Button
@@ -76,6 +95,26 @@
             android:padding="4dp"
             android:layout_alignParentRight="true"
             android:layout_above="@+id/button_grabble"/>
+
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/button_grabble2"
+            android:visibility="invisible"
+            android:background="@drawable/button_grabble"
+            android:padding="4dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/button_menu2"
+            android:visibility="invisible"
+            android:background="@drawable/button_menu"
+            android:padding="4dp"
+            android:layout_alignParentLeft="true"
+            android:layout_above="@+id/button_grabble2"/>
 
         <RelativeLayout
             android:layout_width="300dp"
@@ -123,6 +162,42 @@
 
 
         </RelativeLayout>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/prompt_layout"
+        android:visibility="invisible">
+
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="134dp"
+            android:id="@+id/prompt_image"
+            android:layout_centerInParent="true"
+            android:background="@drawable/prompt_exitgame">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true">
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="54dp"
+                    android:id="@+id/prompt_yes"
+                    android:src="@drawable/prompt_yes"/>
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="54dp"
+                    android:id="@+id/prompt_no"
+                    android:src="@drawable/prompt_no"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 

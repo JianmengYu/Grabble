@@ -1,283 +1,323 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorBGbrown">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="78dp"
-        android:paddingTop="4dp"
+        android:layout_height="match_parent"
         android:background="@color/colorBGbrown">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="74dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:background="@drawable/design_achievement_bg_t">
+            android:layout_height="78dp"
+            android:paddingTop="4dp"
+            android:background="@color/colorBGbrown">
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:id="@+id/settings_button_1"
-                android:src="@drawable/settings_button_off"/>
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:paddingLeft="4dp"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/settings_button_1"
-                android:layout_alignParentLeft="true">
+                android:layout_height="74dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="@drawable/design_achievement_bg_t">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/settings_name_1"
-                    android:layout_gravity="left"
-                    android:paddingLeft="4dp"
-                    android:text="@string/settings_01_name"
-                    android:textSize="25dp"
-                    android:textColor="@color/colorFontBrown"/>
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/settings_button_1"
+                    android:src="@drawable/settings_button_off"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/setting_description_1"
-                    android:layout_gravity="left"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
                     android:paddingLeft="4dp"
-                    android:text="@string/setting_01_description"
-                    android:textSize="10dp"
-                    android:textColor="@color/colorFontBrown"/>
+                    android:orientation="vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/settings_button_1"
+                    android:layout_alignParentLeft="true">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/settings_name_1"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/settings_01_name"
+                        android:textSize="25dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/setting_description_1"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/setting_01_description"
+                        android:textSize="10dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="78dp"
-        android:paddingTop="4dp"
-        android:background="@color/colorBGbrown">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="74dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:background="@drawable/design_achievement_bg_t">
+            android:layout_height="78dp"
+            android:paddingTop="4dp"
+            android:background="@color/colorBGbrown">
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:id="@+id/settings_button_2"
-                android:src="@drawable/settings_button_off"/>
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:paddingLeft="4dp"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/settings_button_2"
-                android:layout_alignParentLeft="true">
+                android:layout_height="74dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="@drawable/design_achievement_bg_t">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/settings_name_2"
-                    android:layout_gravity="left"
-                    android:paddingLeft="4dp"
-                    android:text="@string/settings_02_name"
-                    android:textSize="25dp"
-                    android:textColor="@color/colorFontBrown"/>
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/settings_button_2"
+                    android:src="@drawable/settings_button_off"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/setting_description_2"
-                    android:layout_gravity="left"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
                     android:paddingLeft="4dp"
-                    android:text="@string/setting_02_description"
-                    android:textSize="10dp"
-                    android:textColor="@color/colorFontBrown"/>
+                    android:orientation="vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/settings_button_2"
+                    android:layout_alignParentLeft="true">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/settings_name_2"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/settings_02_name"
+                        android:textSize="25dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/setting_description_2"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/setting_02_description"
+                        android:textSize="10dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="78dp"
-        android:paddingTop="4dp"
-        android:background="@color/colorBGbrown">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="74dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:background="@drawable/design_achievement_bg_t">
+            android:layout_height="78dp"
+            android:paddingTop="4dp"
+            android:background="@color/colorBGbrown">
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:id="@+id/settings_button_3"
-                android:src="@drawable/settings_button_off"/>
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:paddingLeft="4dp"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/settings_button_3"
-                android:layout_alignParentLeft="true">
+                android:layout_height="74dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="@drawable/design_achievement_bg_t">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/settings_name_3"
-                    android:layout_gravity="left"
-                    android:paddingLeft="4dp"
-                    android:text="@string/settings_03_name"
-                    android:textSize="25dp"
-                    android:textColor="@color/colorFontBrown"/>
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/settings_button_3"
+                    android:src="@drawable/settings_button_off"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/setting_description_3"
-                    android:layout_gravity="left"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
                     android:paddingLeft="4dp"
-                    android:text="@string/setting_03_description"
-                    android:textSize="10dp"
-                    android:textColor="@color/colorFontBrown"/>
+                    android:orientation="vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/settings_button_3"
+                    android:layout_alignParentLeft="true">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/settings_name_3"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/settings_03_name"
+                        android:textSize="25dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/setting_description_3"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/setting_03_description"
+                        android:textSize="10dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="78dp"
-        android:paddingTop="4dp"
-        android:background="@color/colorBGbrown">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="74dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:background="@drawable/design_achievement_bg_t">
+            android:layout_height="78dp"
+            android:paddingTop="4dp"
+            android:background="@color/colorBGbrown">
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:id="@+id/settings_button_4"
-                android:src="@drawable/settings_button_off"/>
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:paddingLeft="4dp"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/settings_button_4"
-                android:layout_alignParentLeft="true">
+                android:layout_height="74dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="@drawable/design_achievement_bg_t">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/settings_name_4"
-                    android:layout_gravity="left"
-                    android:paddingLeft="4dp"
-                    android:text="@string/settings_04_name"
-                    android:textSize="25dp"
-                    android:textColor="@color/colorFontBrown"/>
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/settings_button_4"
+                    android:src="@drawable/settings_button_off"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/setting_description_4"
-                    android:layout_gravity="left"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
                     android:paddingLeft="4dp"
-                    android:text="@string/setting_04_description"
-                    android:textSize="10dp"
-                    android:textColor="@color/colorFontBrown"/>
+                    android:orientation="vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/settings_button_4"
+                    android:layout_alignParentLeft="true">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/settings_name_4"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/settings_04_name"
+                        android:textSize="25dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/setting_description_4"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/setting_04_description"
+                        android:textSize="10dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="78dp"
-        android:paddingTop="4dp"
-        android:background="@color/colorBGbrown">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="74dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:background="@drawable/design_achievement_bg_t">
+            android:layout_height="78dp"
+            android:paddingTop="4dp"
+            android:background="@color/colorBGbrown">
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:id="@+id/settings_button_5"
-                android:src="@drawable/settings_button_nuke"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="74dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="@drawable/design_achievement_bg_t">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/settings_button_5"
+                    android:src="@drawable/settings_button_nuke"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:paddingLeft="4dp"
+                    android:orientation="vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/settings_button_5"
+                    android:layout_alignParentLeft="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/settings_name_5"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/settings_05_name"
+                        android:textSize="25dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/setting_description_5"
+                        android:layout_gravity="left"
+                        android:paddingLeft="4dp"
+                        android:text="@string/setting_05_description"
+                        android:textSize="10dp"
+                        android:textColor="@color/colorFontBrown"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/prompt_layout"
+        android:visibility="invisible">
+        
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="134dp"
+            android:id="@+id/prompt_image"
+            android:layout_centerInParent="true"
+            android:background="@drawable/prompt_hardmode">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:paddingLeft="4dp"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/settings_button_5"
-                android:layout_alignParentLeft="true">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/settings_name_5"
-                    android:layout_gravity="left"
-                    android:paddingLeft="4dp"
-                    android:text="@string/settings_05_name"
-                    android:textSize="25dp"
-                    android:textColor="@color/colorFontBrown"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/setting_description_5"
-                    android:layout_gravity="left"
-                    android:paddingLeft="4dp"
-                    android:text="@string/setting_05_description"
-                    android:textSize="10dp"
-                    android:textColor="@color/colorFontBrown"/>
-
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true">
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="54dp"
+                    android:id="@+id/prompt_yes"
+                    android:src="@drawable/prompt_yes"/>
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="54dp"
+                    android:id="@+id/prompt_no"
+                    android:src="@drawable/prompt_no"/>
             </LinearLayout>
 
         </RelativeLayout>
 
-    </RelativeLayout>
 
-</LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

@@ -42,7 +42,7 @@
     <string name="setting_01_description">Switch On to move buttons to left side.</string>
     <string name="setting_02_description">Enhanced Grab and Zoom Distance.</string>
     <string name="setting_03_description">Hide the Help Button on all pages.</string>
-    <string name="setting_04_description">A more balanced mode. (NOT reversable)</string>
+    <string name="setting_04_description">Challenge yourself.</string>
     <string name="setting_05_description">Clear All of the play data. (NOT reversable)</string>
 
     <!--About Page Strings-->

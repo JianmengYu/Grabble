@@ -19,7 +19,7 @@ public class FragmentIntro extends Fragment {
             public void run() {
                 try {
                     super.run();
-                    sleep(4000);  //TODO Adjust Delay timer here (At least 3000 for map)
+                    sleep(2000);  // Adjust Delay timer here (At least 3000 for map)
                 } catch (Exception e)   {
                 } finally {
                     Intent i = new Intent(getActivity().getApplicationContext(),MapActivity.class);

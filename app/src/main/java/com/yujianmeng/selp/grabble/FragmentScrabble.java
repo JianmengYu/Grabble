@@ -98,14 +98,13 @@ public class FragmentScrabble extends Fragment{
     private int prevScore1;
     private int prevScore2;
     private int prevScore3;
+    private boolean hardMode;
+    private boolean hardModeWarning = false;
 
     private Typeface mFont;
 
     AchievementLab achievementLab;
     List<Achievement> achievements;
-
-    //Temp stuff
-    private RelativeLayout mInput;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,7 +129,8 @@ public class FragmentScrabble extends Fragment{
         prevWord1 = save.getString("prevWord1","");
         prevWord2 = save.getString("prevWord2","");
         prevScore1 = save.getInt("prevScore1",50);//Prevent achievement on first word
-        prevScore2 = save.getInt("prevScore2",50);
+        prevScore2 = save.getInt("prevScore2",70);
+        hardMode = save.getBoolean("hardMode",false);
 
         achievementLab = AchievementLab.get(getActivity());
         achievements = achievementLab.getAchievements();
@@ -238,7 +238,7 @@ public class FragmentScrabble extends Fragment{
                             prevWord1 = String.valueOf(grabble.getInput());
                         }
                         //Then the word check;
-                        if (grabble.getPoint() == 7 && isWord(String.valueOf(grabble.getInput()))){
+                        if (hardModeCheck() && grabble.getPoint() == 7 && isWord(String.valueOf(grabble.getInput()))){
                             //update favourate word.
                             char[] c = grabble.getInput();
                             int score = 0;
@@ -260,6 +260,12 @@ public class FragmentScrabble extends Fragment{
                             }
                             addScore(grabble.completeWord());
                             wordCompleted++;
+                        }
+                        if (hardModeWarning) {
+                            mWarning2.setText("HARD MODE: Score Range (" +
+                                    (prevScore1 - 10) + "-" + (prevScore1 + 10) + ") and (" +
+                                    (prevScore2 - 10) + "-" + (prevScore2 + 10) + ") unavailable" );
+                            hardModeWarning = false;
                         }
                         checkAchievement();
                         break;
@@ -389,18 +395,7 @@ public class FragmentScrabble extends Fragment{
         mButtonX.setOnLongClickListener(longListener);
         mButtonY.setOnLongClickListener(longListener);
         mButtonZ.setOnLongClickListener(longListener);
-
         mDiscard.setOnLongClickListener(longListener);
-
-        //TODO remove test cheat layout
-        mInput = (RelativeLayout) view.findViewById(R.id.scrabble_layout_input);
-        mInput.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addScore(score);
-                updateUI();
-            }
-        });
 
         updateUI();
         return view;
@@ -592,18 +587,37 @@ public class FragmentScrabble extends Fragment{
         }
     }
 
+    private boolean hardModeCheck(){
+        if (!hardMode) {return true;}else{
+            char[] c = grabble.getInput();
+            int score = 0;
+            for (char cha: c){
+                score += grabble.getCharScore(cha);
+            }
+            if (score <= prevScore1 + 10 && score >= prevScore1 - 10){
+                hardModeWarning = true;
+                return false;
+            }
+            if (score <= prevScore2 + 10 && score >= prevScore2 - 10){
+                hardModeWarning = true;
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void checkAchievement(){
         String unlocked = "no";
         //Check achievement unlocked
-        if (score >= 100){if(achievementLab.updateAchievement("A New Player in Town")){
+        if (exp >= 100){if(achievementLab.updateAchievement("A New Player in Town")){
             unlocked = "A New Player in Town";}}
-        if (score >= 1000){if(achievementLab.updateAchievement("Grabbled")){
+        if (exp >= 1000){if(achievementLab.updateAchievement("Grabbled")){
             unlocked = "Grabbled";}}
-        if (score >= 9000){if(achievementLab.updateAchievement("It's OVER 9000!")){
+        if (exp >= 9000){if(achievementLab.updateAchievement("It's OVER 9000!")){
             unlocked = "It's OVER 9000!";}}
-        if (score >= 50000){if(achievementLab.updateAchievement("Obsessed")){
+        if (exp >= 50000){if(achievementLab.updateAchievement("Obsessed")){
             unlocked = "Obsessed";}}
-        if (score >= 100000){if(achievementLab.updateAchievement("Maniac!")){
+        if (exp >= 100000){if(achievementLab.updateAchievement("Maniac!")){
             unlocked = "Maniac!";}}
         if (wordCompleted >= 1){if(achievementLab.updateAchievement("My First Word!")){
             unlocked = "My First Word!";}}
