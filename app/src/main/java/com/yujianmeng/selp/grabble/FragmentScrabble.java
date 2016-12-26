@@ -34,6 +34,7 @@ public class FragmentScrabble extends Fragment{
     private TextView mDiscard;
     private ImageView mComplete;
     private ImageView mHelp;
+    private ImageView mHelp2;
     private RelativeLayout mHelpLayout;
 
     private TextView mWarning1;
@@ -100,6 +101,8 @@ public class FragmentScrabble extends Fragment{
     private int prevScore3;
     private boolean hardMode;
     private boolean hardModeWarning = false;
+    private boolean leftHand;
+    private boolean noHelp;
 
     private Typeface mFont;
 
@@ -131,6 +134,8 @@ public class FragmentScrabble extends Fragment{
         prevScore1 = save.getInt("prevScore1",50);//Prevent achievement on first word
         prevScore2 = save.getInt("prevScore2",70);
         hardMode = save.getBoolean("hardMode",false);
+        noHelp = save.getBoolean("noHelp",false);
+        leftHand = save.getBoolean("leftHand",false);
 
         achievementLab = AchievementLab.get(getActivity());
         achievements = achievementLab.getAchievements();
@@ -151,6 +156,7 @@ public class FragmentScrabble extends Fragment{
         mWarning2.setTypeface(mFont);
         mComplete = (ImageView) view.findViewById(R.id.scrabble_complete_button);
         mHelp = (ImageView) view.findViewById(R.id.scrabble_help_button);
+        mHelp2 = (ImageView) view.findViewById(R.id.scrabble_help_button2);
         mHelpLayout = (RelativeLayout) view.findViewById(R.id.scrabble_layout_help);
 
         mInput1 = (ImageView) view.findViewById(R.id.scrabble_input_1);
@@ -283,6 +289,16 @@ public class FragmentScrabble extends Fragment{
                             mWarning1.setVisibility(View.VISIBLE);
                             mWarning2.setVisibility(View.VISIBLE);
                         }break;
+                    case R.id.scrabble_help_button2:
+                        if (mHelpLayout.getVisibility() == View.INVISIBLE){
+                            mHelpLayout.setVisibility(View.VISIBLE);
+                            mWarning1.setVisibility(View.INVISIBLE);
+                            mWarning2.setVisibility(View.INVISIBLE);
+                        }else{
+                            mHelpLayout.setVisibility(View.INVISIBLE);
+                            mWarning1.setVisibility(View.VISIBLE);
+                            mWarning2.setVisibility(View.VISIBLE);
+                        }break;
                     case R.id.scrabble_layout_help:
                         mHelpLayout.setVisibility(View.INVISIBLE);
                         mWarning1.setVisibility(View.VISIBLE);
@@ -324,6 +340,7 @@ public class FragmentScrabble extends Fragment{
         mComplete.setOnClickListener(shortListener);
         mDiscard.setOnClickListener(shortListener);
         mHelp.setOnClickListener(shortListener);
+        mHelp2.setOnClickListener(shortListener);
         mHelpLayout.setOnClickListener(shortListener);
 
         mLevel.setOnClickListener(shortListener);
@@ -540,6 +557,14 @@ public class FragmentScrabble extends Fragment{
         mExp.setText("Exp: "+exp);
         mScore.setText("Total Score: "+score);
         mWarning1.setText("");
+        if(leftHand){
+            mHelp.setVisibility(View.INVISIBLE);
+            mHelp2.setVisibility(View.VISIBLE);
+        }
+        if(noHelp){
+            mHelp.setVisibility(View.INVISIBLE);
+            mHelp2.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void constructString(char c, int type){
@@ -691,7 +716,7 @@ public class FragmentScrabble extends Fragment{
             tv1.setText("Achievement Unlocked!");
             tv1.setTextSize(10);
             tv2.setText("\"" + unlocked + "\"");
-            tv2.setTextSize(20);
+            tv2.setTextSize(15);
             tv3.setText("");
             t.setView(tl);
             t.show();

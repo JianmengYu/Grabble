@@ -160,4 +160,10 @@ public class MarkerLab {
         //Move this to a more efficient place, if possible
             mDatabase.insert(MarkerTable.NAME,null,values);
     }
+
+    public void deleteAll(){
+        //Drop all marker record.. and set static marker lab to null?
+        sMarkerLab = null;
+        mDatabase.execSQL("delete from "+ MarkerTable.NAME);
+    }
 }

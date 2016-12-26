@@ -453,6 +453,14 @@
         android:id="@+id/scrabble_help_button"
         android:layout_above="@id/scrabble_layout_keyboard"
         android:layout_alignParentRight="true"/>
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/button_help"
+        android:id="@+id/scrabble_help_button2"
+        android:visibility="invisible"
+        android:layout_above="@id/scrabble_layout_keyboard"
+        android:layout_alignParentLeft="true"/>
 
     <!--A padding-->
     <RelativeLayout

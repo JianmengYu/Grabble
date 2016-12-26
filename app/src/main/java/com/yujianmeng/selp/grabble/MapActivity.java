@@ -679,7 +679,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             tv1.setText("Achievement Unlocked!");
             tv1.setTextSize(10);
             tv2.setText("\"" + unlocked + "\"");
-            tv2.setTextSize(20);
+            tv2.setTextSize(15);
             tv3.setText("");
             t.setView(tl);
             t.show();

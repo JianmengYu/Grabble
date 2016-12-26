@@ -145,11 +145,25 @@ public class FragmentSettings extends Fragment {
                     updateUI();
                 }
                 if (promptIsOn == 2){
-                    //TODO clear data.
                     Toast.makeText(getActivity().getApplicationContext(),
-                            "DATA CLEARED",
+                            "DATA CLEARED, EXITING GAME.",
                             Toast.LENGTH_SHORT).show();
-                    updateUI();
+                    //Clear Database
+                    MarkerLab markerLab = MarkerLab.get(getActivity().getApplicationContext());
+                    markerLab.deleteAll();
+                    AchievementLab achievementLab = AchievementLab.get(getActivity().getApplicationContext());
+                    achievementLab.deleteAll();
+                    //Clear Shared preference
+                    SharedPreferences save = getActivity().getSharedPreferences(PREF_SAVE, 0);
+                    SharedPreferences.Editor editor = save.edit();
+                    editor.clear();
+                    editor.commit();
+                    leftHand = false;
+                    levelBonus = true;
+                    noHelp = false;
+                    hardMode = false;
+                    //Exit Game.
+                    getActivity().finishAffinity();
                 }
             }
         });

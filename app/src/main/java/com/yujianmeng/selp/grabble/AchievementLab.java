@@ -154,4 +154,10 @@ public class AchievementLab {
         }
         cursor.close();
     }
+
+    public void deleteAll(){
+        //Drop all marker record.. and set static marker lab to null?
+        sAchievementLab = null;
+        mDatabase.execSQL("delete from "+ AchievementTable.NAME);
+    }
 }
