@@ -1,13 +1,21 @@
 package com.yujianmeng.selp.grabble;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
+import android.os.PowerManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -38,12 +46,21 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -90,6 +107,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     AchievementLab achievementLab;
     List<Achievement> achievements;
+    MarkerLab markerLab;
+    List<MyMarker> markerList;
 
     //Statistics
     private int collected;
@@ -98,6 +117,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private float walkedToday;
     private int eagleUsed;
     private int grabberUsed;
+    private String weekDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +190,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         editor.putFloat("walkedToday", (walkedToday));
         editor.putInt("eagleUsed",eagleUsed);
         editor.putInt("grabberUsed",grabberUsed);
+        editor.putString("weekDay",weekDay);
         editor.commit();
         Log.i("MAP","onStop called");
         super.onPause();
@@ -220,8 +241,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //TODO Download Online kml
-        //TODO Add Async to enhance performance.
+        SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
+        weekDay = save.getString("weekDay","noDay");
+        Log.i("MAP","day:"+weekDay);
         readKml();
 
         achievementLab = AchievementLab.get(this);
@@ -686,9 +708,65 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
     }
 
-    private void readKml(){
-        MarkerLab markerLab = MarkerLab.get(getApplicationContext());
-        List<MyMarker> markerList = markerLab.getMarkers();
+    private boolean readKml(){
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+        Calendar calendar = Calendar.getInstance();
+        String weekDay = dayFormat.format(calendar.getTime()).toLowerCase();
+        //Case 0: No internet:
+        if (!isOnline()){
+            Toast.makeText(MapActivity.this, "You have no Internet Connection!",
+                    Toast.LENGTH_LONG).show();
+            if (this.weekDay.equals("noDay")){
+                return false;
+            }else{
+                markerLab = MarkerLab.get(getApplicationContext());
+                markerList = markerLab.getMarkers();
+                addMarkers();
+                return true;
+            }
+        }
+        //Case 1: first time start;
+        if (this.weekDay.equals("noDay")){
+            Toast.makeText(MapActivity.this, "Downloading Letters, this might took a while",
+                    Toast.LENGTH_LONG).show();
+            //http://stackoverflow.com/questions/3028306/download-a-file-with-android-and-showing-the-progress-in-a-progressdialog
+            final DownloadTask downloadTask = new DownloadTask(this);
+            downloadTask.execute("http://www.inf.ed.ac.uk/teaching/courses/selp/coursework/" + weekDay + ".kml");
+            this.weekDay = weekDay;
+            return true;
+        }
+        //Case 2: Change of Day
+        if (!weekDay.equals(this.weekDay)){
+            Toast.makeText(MapActivity.this, "Downloading New Letters, this might took a while",
+                    Toast.LENGTH_LONG).show();
+            SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
+            SharedPreferences.Editor editor = save.edit();
+            editor.putBoolean("deleteFlag",true);
+            editor.commit();
+            //http://stackoverflow.com/questions/3028306/download-a-file-with-android-and-showing-the-progress-in-a-progressdialog
+            final DownloadTask downloadTask = new DownloadTask(this);
+            downloadTask.execute("http://www.inf.ed.ac.uk/teaching/courses/selp/coursework/" + weekDay + ".kml");
+            this.weekDay = weekDay;
+            collectedToday = 0;
+            walkedToday = 0;
+            return true;
+        }
+        //Case 3: Normal Open
+        markerLab = MarkerLab.get(getApplicationContext());
+        markerList = markerLab.getMarkers();
+        addMarkers();
+        return false;
+    }
+
+    //http://stackoverflow.com/questions/15259860/how-do-i-handle-the-issue-of-having-no-internet-for-my-application
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {return true;}
+        return false;
+    }
+
+    private void addMarkers(){
         for (MyMarker m : markerList){
             if (!m.ismCollected()){
                 marker = mMap.addMarker(new MarkerOptions()
@@ -732,4 +810,105 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             default:return R.drawable.map_pickable;
         }
     }
+
+    //http://stackoverflow.com/questions/3028306/download-a-file-with-android-and-showing-the-progress-in-a-progressdialog
+    private class DownloadTask extends AsyncTask<String, Integer, String> {
+
+        private Context context;
+
+        public DownloadTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... sUrl) {
+            Log.i("DOWNLOAD","Started");
+            InputStream input = null;
+            OutputStream output = null;
+            HttpURLConnection connection = null;
+            //http://stackoverflow.com/questions/18256521/android-calendar-get-current-day-of-week-as-string
+            SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+            Calendar calendar = Calendar.getInstance();
+            String weekDay = dayFormat.format(calendar.getTime()).toLowerCase();
+            Log.i("DOWNLOAD","Date made");
+            try {
+                URL url = new URL(sUrl[0]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                //http://stackoverflow.com/questions/10329779/httpresponse-code-302
+                Log.i("DOWNLOAD", "EXPECTED:" + sUrl[0]);
+                Log.i("DOWNLOAD", "Server returned HTTP " + connection.getResponseCode()
+                        + " " + connection.getResponseMessage());
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP
+                        || connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
+                        || connection.getResponseCode() ==    HttpURLConnection.HTTP_SEE_OTHER){
+                    String newURL = connection.getHeaderField("Location");
+                    Log.i("DOWNLOAD","FOUND:" + newURL);
+                    url = new URL(newURL);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
+                }else{
+                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                        return "Server returned HTTP " + connection.getResponseCode()
+                                + " " + connection.getResponseMessage();
+                    }
+                }
+                int fileLength = connection.getContentLength();
+                Log.i("DOWNLOAD",String.valueOf(fileLength));
+                input = connection.getInputStream();
+                output = new FileOutputStream(
+                        Environment.getExternalStorageDirectory().getAbsolutePath() +
+                        "/Android/data/com.yujianmeng.selp.grabble/" + weekDay + ".kml");
+                byte data[] = new byte[4096];
+                long total = 0;
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    // allow canceling with back button
+                    if (isCancelled()) {
+                        input.close();
+                        return null;
+                    }
+                    total += count;
+                    // publishing the progress....
+                    if (fileLength > 0) // only if total length is known
+                        publishProgress((int) (total * 100 / fileLength));
+                    output.write(data, 0, count);
+                }
+                markerLab = MarkerLab.get(getApplicationContext());
+                markerList = markerLab.getMarkers();
+            } catch (Exception e) {
+                Log.i("ERROR",e.toString());
+                return e.toString();
+            } finally {
+                Log.i("DOWNLOAD","Completed?");
+                try {
+                    if (output != null)
+                        output.close();
+                    if (input != null)
+                        input.close();
+                } catch (IOException ignored) {
+                }
+                if (connection != null)
+                    connection.disconnect();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String ignored){
+            //http://stackoverflow.com/questions/13079645/android-how-to-wait-asynctask-to-finish-in-mainthread
+            myHandler.sendEmptyMessage(0);
+        }
+    }
+
+    Handler myHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:addMarkers();break;
+                default:break;
+            }
+        }
+    };
 }
