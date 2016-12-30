@@ -1,6 +1,8 @@
 package com.yujianmeng.selp.grabble;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,10 +14,12 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -31,9 +35,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -62,6 +70,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+/** DISCLAIMER: the location codes are adapted from
+ * <<Android Programming: The Big Nerd Ranch Guide>> 2nd Edition
+ * by Bill Phillips, Chris Stewart, Brian Hardy and Kristin Marsicano
+ * copyright 2015 Big Nerd Ranch, LLC.
+ * (The locatr part, obsoleted methods are replaced with code from these guides:)
+ * http://stackoverflow.com/questions/22493465/check-if-correct-google-play-service-available-unfortunately-application-has-s
+ */
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -118,6 +134,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private int eagleUsed;
     private int grabberUsed;
     private String weekDay;
+    private boolean startedWalking = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,63 +166,164 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         mPrompt = (RelativeLayout) findViewById(R.id.prompt_layout);
         mPromptYes = (ImageView) findViewById(R.id.prompt_yes);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(@Nullable Bundle bundle) {
+                        Log.i("LOCATION","Connected");
+                        checkPermission();
+                        LocationRequest locationRequest = LocationRequest.create();
+                        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                        locationRequest.setNumUpdates(5000);//Set times to track
+                        locationRequest.setInterval(5000);//Set interval of track
+                        locationRequest.setFastestInterval(1000);
+                        LocationServices.FusedLocationApi
+                                .requestLocationUpdates(mGoogleApiClient, locationRequest, new LocationListener() {
+                                    @Override
+                                    public void onLocationChanged(Location location) {
+                                        Log.i("LOCATION", "Got a fix: " + location);
+                                        if (!zooming) {
+                                            //Doesn't Track when using eagle eye item
+                                            if (startedWalking) {
+                                                //Start to record statistics when start playing
+                                                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                                float range = distFrom(mMyLocation2, latLng);
+                                                Log.i("TAG", latLng.toString());
+                                                walked += range;
+                                                walkedToday += range;
+                                                CameraPosition temp = mMap.getCameraPosition();
+                                                boolean inRange = isInRange(mMyLocation, latLng, 0.0005);
+                                                if (inRange) {
+                                                    mMyLocation2 = latLng;
+                                                    mMyBearing = temp.bearing;
+                                                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                                                            new CameraPosition.Builder(temp)
+                                                                    .target(latLng)//Initial location
+                                                                    .build()));
+                                                } else {
+                                                    mMyBearing = (float) newBearing(latLng);
+                                                    mMyLocation = latLng;
+                                                    mMyLocation2 = latLng;
+                                                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                                                            new CameraPosition.Builder(temp)
+                                                                    .target(mMyLocation)//Initial location
+                                                                    .bearing(mMyBearing)
+                                                                    .build()));
+                                                }
+                                            } else {
+                                                //Move to first point
+                                                mMyLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                                mMyLocation2 = mMyLocation;
+                                                CameraPosition testAngle = new CameraPosition.Builder()
+                                                        .target(mMyLocation)
+                                                        .zoom(19)
+                                                        .bearing(0)
+                                                        .tilt(45)
+                                                        .build();
+                                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(testAngle),
+                                                        new GoogleMap.CancelableCallback() {
+                                                            @Override
+                                                            public void onFinish() {
+                                                                enableControl();
+                                                                startedWalking = true;
+                                                            }//Return controls
+
+                                                            @Override
+                                                            public void onCancel() {
+                                                            }
+                                                        });
+                                            }
+                                        }
+
+
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int i) {
+                        Log.i("LOCATION","Connection suspended");
+                        finish();
+                    }
+                })
+                .build();
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
-        for (int i = 0 ; i < 26 ; i++) {mLetters[i] = save.getInt("letter" + i,3);}//Change the initial letter amount here.
-        mEagle = save.getInt("eagle",0);
-        mGrabber = save.getInt("grabber",0);
-        collected = save.getInt("collected",0);
-        collectedToday = save.getInt("collectedToday",0);
-        walked = save.getFloat("walked",0);
-        walkedToday = save.getFloat("walkedToday",0);
-        eagleUsed = save.getInt("eagleUsed",0);
-        grabberUsed = save.getInt("grabberUsed",0);
-        leftHand = save.getBoolean("leftHand",false);
-        noHelp = save.getBoolean("noHelp",false);
-        levelBonus = save.getBoolean("levelBonus",true);
-        level = save.getInt("level",0);
+        for (int i = 0; i < 26; i++) {
+            mLetters[i] = save.getInt("letter" + i, 3);
+        }//Change the initial letter amount here.
+        mEagle = save.getInt("eagle", 0);
+        mGrabber = save.getInt("grabber", 0);
+        collected = save.getInt("collected", 0);
+        collectedToday = save.getInt("collectedToday", 0);
+        walked = save.getFloat("walked", 0);
+        walkedToday = save.getFloat("walkedToday", 0);
+        eagleUsed = save.getInt("eagleUsed", 0);
+        grabberUsed = save.getInt("grabberUsed", 0);
+        leftHand = save.getBoolean("leftHand", false);
+        noHelp = save.getBoolean("noHelp", false);
+        levelBonus = save.getBoolean("levelBonus", true);
+        level = save.getInt("level", 0);
         if (levelBonus) {
             grabDistance = 0.0003 * (1 + 0.01 * level);
-        }else{
+        } else {
             grabDistance = 0.0003;
         }
-        Log.i("MAP","onStart called");
+        Log.i("MAP", "onResume called");
         super.onResume();
         updateUI();
+        //http://stackoverflow.com/questions/22493465/check-if-correct-google-play-service-available-unfortunately-application-has-s
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int errorCode = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if (errorCode != ConnectionResult.SUCCESS) {
+            Dialog errorDialog = googleApiAvailability.getErrorDialog(this, errorCode, 0, new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    finish();
+                }
+            });
+            errorDialog.show();
+        }
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
         SharedPreferences.Editor editor = save.edit();
-        for (int i = 0 ; i < 26 ; i++) {editor.putInt("letter" + i,mLetters[i]);}
-        editor.putInt("eagle",mEagle);
-        editor.putInt("grabber",mGrabber);
-        editor.putInt("collected",collected);
-        editor.putInt("collectedToday",collectedToday);
+        for (int i = 0; i < 26; i++) {
+            editor.putInt("letter" + i, mLetters[i]);
+        }
+        editor.putInt("eagle", mEagle);
+        editor.putInt("grabber", mGrabber);
+        editor.putInt("collected", collected);
+        editor.putInt("collectedToday", collectedToday);
         editor.putFloat("walked", (walked));
         editor.putFloat("walkedToday", (walkedToday));
-        editor.putInt("eagleUsed",eagleUsed);
-        editor.putInt("grabberUsed",grabberUsed);
-        editor.putString("weekDay",weekDay);
+        editor.putInt("eagleUsed", eagleUsed);
+        editor.putInt("grabberUsed", grabberUsed);
+        editor.putString("weekDay", weekDay);
         editor.commit();
-        Log.i("MAP","onStop called");
+        Log.i("MAP", "onPause called");
         super.onPause();
     }
 
     @Override
-    protected void onStart(){
-        Log.i("MAP","onResume called");
+    protected void onStart() {
+        Log.i("MAP", "onStart called");
         super.onStart();
+        mGoogleApiClient.connect();
     }
 
     @Override
-    protected void onStop(){
-        Log.i("MAP","onPause called");
+    protected void onStop() {
+        Log.i("MAP", "onStop called");
         super.onStop();
+        mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -218,8 +336,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             }
             return true;
         }
-        if (keyCode == KeyEvent.KEYCODE_BACK){
-            if(!promptOpened){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!promptOpened) {
                 promptOpened = true;
                 mPrompt.setVisibility(View.VISIBLE);
                 return false;
@@ -242,8 +360,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap = googleMap;
 
         SharedPreferences save = getSharedPreferences(PREF_SAVE, 0);
-        weekDay = save.getString("weekDay","noDay");
-        Log.i("MAP","day:"+weekDay);
+        weekDay = save.getString("weekDay", "noDay");
+        Log.i("MAP", "day:" + weekDay);
         readKml();
 
         achievementLab = AchievementLab.get(this);
@@ -329,10 +447,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         View.OnLongClickListener eagleOnLongClick = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(mEagle == 0){
+                if (mEagle == 0) {
                     Toast.makeText(MapActivity.this, "You have no Eagle Eye left!",
                             Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Toast.makeText(MapActivity.this, "You have " + mEagle + " Eagle Eye left!",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -411,7 +529,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onClick(View v) {
                 mMenu.setVisibility(View.INVISIBLE);
                 Intent i = new Intent(getApplicationContext(), ActivityPager.class);
-                i.putExtra("EXTRA_PAGE",1);
+                i.putExtra("EXTRA_PAGE", 1);
                 startActivity(i);
             }
         });
@@ -420,7 +538,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onClick(View v) {
                 mMenu.setVisibility(View.INVISIBLE);
                 Intent i = new Intent(getApplicationContext(), ActivityPager.class);
-                i.putExtra("EXTRA_PAGE",2);
+                i.putExtra("EXTRA_PAGE", 2);
                 startActivity(i);
             }
         });
@@ -429,7 +547,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onClick(View v) {
                 mMenu.setVisibility(View.INVISIBLE);
                 Intent i = new Intent(getApplicationContext(), ActivityPager.class);
-                i.putExtra("EXTRA_PAGE",3);
+                i.putExtra("EXTRA_PAGE", 3);
                 startActivity(i);
             }
         });
@@ -438,18 +556,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if(isInRange(mMyLocation2,marker.getPosition(),grabDistance)){
+                if (isInRange(mMyLocation2, marker.getPosition(), grabDistance)) {
                     mLetters[Grabble.charToInt(Character.toLowerCase(marker.getTitle().charAt(0)))]++;
-                    Log.i("TAG",marker.getSnippet());
+                    Log.i("TAG", marker.getSnippet());
                     MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
                     marker.remove();
                     markers.remove(marker);
                     collected++;
                     collectedToday++;
                     Toast.makeText(getApplicationContext(),
-                        "Letter " + marker.getTitle() + " collected!",
-                        Toast.LENGTH_SHORT).show();
-                }else{
+                            "Letter " + marker.getTitle() + " collected!",
+                            Toast.LENGTH_SHORT).show();
+                } else {
                     Toast.makeText(getApplicationContext(),
                             "Too Far! \nYou have " + mGrabber + " Grabber left.",
                             Toast.LENGTH_SHORT).show();
@@ -462,14 +580,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onMapLongClick(LatLng latLng) {
                 boolean moved = true;//----------------------TEST
-                for(Marker m : markers){
-                    if(Math.abs(m.getPosition().latitude  - latLng.latitude)  < 0.00005 &&
-                       Math.abs(m.getPosition().longitude - latLng.longitude) < 0.00005) {
-                                                //Adjust Click Range Here
-                        if (mGrabber != 0){
+                for (Marker m : markers) {
+                    if (Math.abs(m.getPosition().latitude - latLng.latitude) < 0.00005 &&
+                            Math.abs(m.getPosition().longitude - latLng.longitude) < 0.00005) {
+                        //Adjust Click Range Here
+                        if (mGrabber != 0) {
                             mLetters[Grabble.charToInt(Character.toLowerCase(m.getTitle().charAt(0)))]++;
                             Toast.makeText(MapActivity.this, "Letter " + m.getTitle() + " collected using grabber!",
-                                Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_SHORT).show();
                             MarkerLab.get(getApplicationContext()).updateMarkers(marker.getSnippet());
                             m.remove();
                             markers.remove(m);
@@ -478,48 +596,58 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             collected++;
                             collectedToday++;
                             moved = false;//------------TEST
-                        }else{
+                        } else {
                             Toast.makeText(MapActivity.this, "You don't have any Grabber Left!",
-                                    Toast.LENGTH_SHORT).show();}
+                                    Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     }
                 }
                 //TODO remove following move code.
-                if (moved && !zooming){
+                if (moved && !zooming) {
                     disableControl();
-                    float range = distFrom(mMyLocation2,latLng);
+                    float range = distFrom(mMyLocation2, latLng);
+                    Log.i("TAG",latLng.toString());
                     walked += range;
                     walkedToday += range;
                     CameraPosition temp = mMap.getCameraPosition();
-                    boolean inRange = isInRange(mMyLocation,latLng,0.0005);
-                    if(inRange){
+                    boolean inRange = isInRange(mMyLocation, latLng, 0.0005);
+                    if (inRange) {
                         mMyLocation2 = latLng;
                         mMyBearing = temp.bearing;
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                            new CameraPosition.Builder(temp)
-                                    .target(latLng)//Initial location
-                                    .build()),
-                            new GoogleMap.CancelableCallback() {
-                                @Override
-                                public void onFinish() {enableControl();}//Return controls
-                                @Override
-                                public void onCancel() {}
-                            });
-                    }else{
+                                new CameraPosition.Builder(temp)
+                                        .target(latLng)//Initial location
+                                        .build()),
+                                new GoogleMap.CancelableCallback() {
+                                    @Override
+                                    public void onFinish() {
+                                        enableControl();
+                                    }//Return controls
+
+                                    @Override
+                                    public void onCancel() {
+                                    }
+                                });
+                    } else {
                         mMyBearing = (float) newBearing(latLng);
                         mMyLocation = latLng;
                         mMyLocation2 = latLng;
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                            new CameraPosition.Builder(temp)
-                                    .target(mMyLocation)//Initial location
-                                    .bearing(mMyBearing)
-                                    .build()),
-                            new GoogleMap.CancelableCallback() {
-                                @Override
-                                public void onFinish() {enableControl();}//Return controls
-                                @Override
-                                public void onCancel() {}
-                            });
+                                new CameraPosition.Builder(temp)
+                                        .target(mMyLocation)//Initial location
+                                        .bearing(mMyBearing)
+                                        .build()),
+                                new GoogleMap.CancelableCallback() {
+                                    @Override
+                                    public void onFinish() {
+                                        enableControl();
+                                    }//Return controls
+
+                                    @Override
+                                    public void onCancel() {
+                                    }
+                                });
                     }
                 }
                 //TODO end of test move code
@@ -529,38 +657,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         // --- finish initializing, starting app ---
         disableControl();//Prevent Cheat, re-enable during camera initialization
+        checkPermission();
 
-        //TODO get my location;
-        //TEMP start location
-        LatLng pointsamp1 = new LatLng(55.943, -3.189);
-
-        /*
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED &&
-             ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {return;}
-        mMap.setMyLocationEnabled(true);
-        Location myLocation = mMap.getMyLocation();//Useless!
-        LatLng myLatLng = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
-        */
+        //Set a Initial camera location, move to my location later.
+        LatLng pointsamp1 = new LatLng(55.9414, -3.1884);//Temporary location before zoom to actual location
         mMyLocation = pointsamp1;//Location for camera
         mMyLocation2 = pointsamp1;//Location for actual position
-
         CameraPosition testAngle = new CameraPosition.Builder()
                 .target(mMyLocation)//Initial location
-                .zoom(19)
+                .zoom(16)//19 is normal
                 .bearing(0)
                 .tilt(45)
                 .build();
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(testAngle),
-                new GoogleMap.CancelableCallback() {
-                    @Override
-                    public void onFinish() {enableControl();}//Return controls
-                    @Override
-                    public void onCancel() {}
-                });
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(testAngle));
     }
 
     private void updateUI(){
@@ -674,8 +783,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             unlocked = "Lazy Grabber User";}}
         if (eagleUsed >= 5){if(achievementLab.updateAchievement("Peeping Tom")){
             unlocked = "Peeping Tom";}}
-        if (eagleUsed >= 50){if(achievementLab.updateAchievement("George Square have eyes")){
-            unlocked = "George Square have eyes";}}
+        if (eagleUsed >= 50){if(achievementLab.updateAchievement("Clairvoyant")){
+            unlocked = "Clairvoyant";}}
         //Start construct Toast
         if (!unlocked.equals("no")){
             //Prompt the Player if they unlocked an achievement.
@@ -911,4 +1020,22 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             }
         }
     };
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public void checkPermission(){
+        //http://stackoverflow.com/questions/30549561/how-to-check-grants-permissions-at-run-time
+        int loc = ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        int loc2 = ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (loc != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (loc2 != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            this.requestPermissions(listPermissionsNeeded.toArray
+                    (new String[listPermissionsNeeded.size()]),PackageManager.PERMISSION_GRANTED);
+        }
+    }
 }

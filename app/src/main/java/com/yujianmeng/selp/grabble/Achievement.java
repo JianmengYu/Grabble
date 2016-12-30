@@ -53,7 +53,7 @@ public class Achievement {
             case "Grabber User" : return R.drawable.achievement_grab5;
             case "Lazy Grabber User" : return R.drawable.achievement_grab50;
             case "Peeping Tom" : return R.drawable.achievement_eagle5;
-            case "George Square have eyes" : return R.drawable.achievement_eagle50;
+            case "Clairvoyant" : return R.drawable.achievement_eagle50;
             case "Bona Fide Player" : return R.drawable.achievement_item200;
 
             case "Toddler": return R.drawable.achievement_toddler;
