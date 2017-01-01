@@ -179,7 +179,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                         Log.i("LOCATION", "Got a fix: " + location);
                                         if (!zooming) {
                                             //Doesn't Track when using eagle eye item
-                                            if (startedWalking>5) {//Ignore first 10 location reading
+                                            if (startedWalking>2) {//Ignore first 3 location reading
                                                 //Start to record statistics when start playing
                                                 mMyLoc.setVisibility(View.VISIBLE);
                                                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -193,6 +193,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                                                     .target(latLng)//Initial location
                                                                     .build()));
                                                 } else {
+                                                    mMyLoc.setVisibility(View.VISIBLE);
                                                     float range = distFrom(mMyLocation, latLng);
                                                     Log.i("TAG", latLng.toString());
                                                     walked += range;
