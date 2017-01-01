@@ -1,13 +1,10 @@
 package com.yujianmeng.selp.grabble;
 
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,7 +188,7 @@ public class FragmentSettings extends Fragment {
         Log.i("SET","onPause called");
         super.onPause();
     }
-    //TODO delete Experimental Code?
+
     @Override
     public void onResume(){
         Log.i("SET","onResume called");

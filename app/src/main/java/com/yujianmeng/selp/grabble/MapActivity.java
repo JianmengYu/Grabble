@@ -3,7 +3,6 @@ package com.yujianmeng.selp.grabble;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,7 +17,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -36,10 +34,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -53,15 +48,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -69,7 +59,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /** DISCLAIMER: the location codes are adapted from
  * <<Android Programming: The Big Nerd Ranch Guide>> 2nd Edition
@@ -78,6 +67,8 @@ import java.util.concurrent.TimeUnit;
  * (The locatr part, obsoleted methods are replaced with code from these guides:)
  * http://stackoverflow.com/questions/22493465/check-if-correct-google-play-service-available-unfortunately-application-has-s
  */
+
+//The Code in this activity is a bit of messy and needed to be cleaned up
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -102,6 +93,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Button mButtonMenu2;
     private RelativeLayout mPrompt;
     private ImageView mPromptYes;
+    private ImageView mMyLoc;
     private GoogleApiClient mGoogleApiClient;
 
     private Marker marker;
@@ -134,7 +126,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private int eagleUsed;
     private int grabberUsed;
     private String weekDay;
-    private boolean startedWalking = false;
+    private int startedWalking = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +150,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMenuStatistics = (ImageView) findViewById(R.id.map_menu_statistics);
         mMenuSettings = (ImageView) findViewById(R.id.map_menu_settings);
         mMenuAbout = (ImageView) findViewById(R.id.map_menu_about);
+        mMyLoc = (ImageView) findViewById(R.id.map_myloc);
 
         mButtonEagle2 = (Button) findViewById(R.id.button_eagle2);
         mButtonHelp2 = (Button) findViewById(R.id.button_help2);
@@ -178,7 +171,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                         locationRequest.setNumUpdates(5000);//Set times to track
                         locationRequest.setInterval(5000);//Set interval of track
-                        locationRequest.setFastestInterval(1000);
+                        locationRequest.setFastestInterval(2000);
                         LocationServices.FusedLocationApi
                                 .requestLocationUpdates(mGoogleApiClient, locationRequest, new LocationListener() {
                                     @Override
@@ -186,15 +179,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                         Log.i("LOCATION", "Got a fix: " + location);
                                         if (!zooming) {
                                             //Doesn't Track when using eagle eye item
-                                            if (startedWalking) {
+                                            if (startedWalking>5) {//Ignore first 10 location reading
                                                 //Start to record statistics when start playing
+                                                mMyLoc.setVisibility(View.VISIBLE);
                                                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                                                float range = distFrom(mMyLocation2, latLng);
-                                                Log.i("TAG", latLng.toString());
-                                                walked += range;
-                                                walkedToday += range;
                                                 CameraPosition temp = mMap.getCameraPosition();
-                                                boolean inRange = isInRange(mMyLocation, latLng, 0.0005);
+                                                boolean inRange = isInRange(mMyLocation, latLng, 0.0008);
                                                 if (inRange) {
                                                     mMyLocation2 = latLng;
                                                     mMyBearing = temp.bearing;
@@ -203,6 +193,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                                                     .target(latLng)//Initial location
                                                                     .build()));
                                                 } else {
+                                                    float range = distFrom(mMyLocation, latLng);
+                                                    Log.i("TAG", latLng.toString());
+                                                    walked += range;
+                                                    walkedToday += range;
                                                     mMyBearing = (float) newBearing(latLng);
                                                     mMyLocation = latLng;
                                                     mMyLocation2 = latLng;
@@ -213,7 +207,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                                                     .build()));
                                                 }
                                             } else {
-                                                //Move to first point
+                                                //Move to first point(s) and deal with the jump problem
                                                 mMyLocation = new LatLng(location.getLatitude(), location.getLongitude());
                                                 mMyLocation2 = mMyLocation;
                                                 CameraPosition testAngle = new CameraPosition.Builder()
@@ -222,12 +216,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                                         .bearing(0)
                                                         .tilt(45)
                                                         .build();
+                                                startedWalking++;
                                                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(testAngle),
                                                         new GoogleMap.CancelableCallback() {
                                                             @Override
                                                             public void onFinish() {
                                                                 enableControl();
-                                                                startedWalking = true;
                                                             }//Return controls
 
                                                             @Override
@@ -579,7 +573,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                boolean moved = true;//----------------------TEST
                 for (Marker m : markers) {
                     if (Math.abs(m.getPosition().latitude - latLng.latitude) < 0.00005 &&
                             Math.abs(m.getPosition().longitude - latLng.longitude) < 0.00005) {
@@ -595,7 +588,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             grabberUsed++;
                             collected++;
                             collectedToday++;
-                            moved = false;//------------TEST
                         } else {
                             Toast.makeText(MapActivity.this, "You don't have any Grabber Left!",
                                     Toast.LENGTH_SHORT).show();
@@ -603,54 +595,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                         break;
                     }
                 }
-                //TODO remove following move code.
-                if (moved && !zooming) {
-                    disableControl();
-                    float range = distFrom(mMyLocation2, latLng);
-                    Log.i("TAG",latLng.toString());
-                    walked += range;
-                    walkedToday += range;
-                    CameraPosition temp = mMap.getCameraPosition();
-                    boolean inRange = isInRange(mMyLocation, latLng, 0.0005);
-                    if (inRange) {
-                        mMyLocation2 = latLng;
-                        mMyBearing = temp.bearing;
-                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                                new CameraPosition.Builder(temp)
-                                        .target(latLng)//Initial location
-                                        .build()),
-                                new GoogleMap.CancelableCallback() {
-                                    @Override
-                                    public void onFinish() {
-                                        enableControl();
-                                    }//Return controls
-
-                                    @Override
-                                    public void onCancel() {
-                                    }
-                                });
-                    } else {
-                        mMyBearing = (float) newBearing(latLng);
-                        mMyLocation = latLng;
-                        mMyLocation2 = latLng;
-                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                                new CameraPosition.Builder(temp)
-                                        .target(mMyLocation)//Initial location
-                                        .bearing(mMyBearing)
-                                        .build()),
-                                new GoogleMap.CancelableCallback() {
-                                    @Override
-                                    public void onFinish() {
-                                        enableControl();
-                                    }//Return controls
-
-                                    @Override
-                                    public void onCancel() {
-                                    }
-                                });
-                    }
-                }
-                //TODO end of test move code
                 checkAchievement();
             }
         });

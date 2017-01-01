@@ -2,8 +2,6 @@ package com.yujianmeng.selp.grabble;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
