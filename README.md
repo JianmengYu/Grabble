@@ -1,8 +1,6 @@
-# Grabble
+![Alt Text](https://github.com/JianmengYu/Grabble/blob/master/Design_phoneview_title.png)
 
 A fusion between Pokemon Go and Scrabble (pls don't sue).  
-
-![Alt Text](https://github.com/JianmengYu/Grabble/blob/master/Design_phoneview_title.png)
 
 ## Gameplay
 
